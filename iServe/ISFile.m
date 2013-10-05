@@ -83,6 +83,8 @@ ISImageScaleMode DEFAULT_THUMBNAIL_MODE = ISImageScaleModeCover;
         if(!asset) {
             if(result) {
                 ISFile *file = [[ISFile alloc] initWithAsset:result];
+                [result release];
+                
                 block([file autorelease], nil);
             } else {
                 block(nil, nil);
@@ -91,7 +93,7 @@ ISImageScaleMode DEFAULT_THUMBNAIL_MODE = ISImageScaleModeCover;
             return;
         }
         
-        result = asset;
+        result = [asset retain];
     };
     
     [group enumerateAssetsAtIndexes:[NSIndexSet indexSetWithIndex:index] options:0 usingBlock:resultBlock];
