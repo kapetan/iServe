@@ -1,11 +1,48 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Assets</title>
-    </head>
-    <body>
-        <table style="border:none;">
-            %@Hello
-        </table>
-    </body>
+	<head>
+		<title>iServe</title>
+
+		<link rel="stylesheet" type="text/css" href="/public/css/bootstrap.css">
+
+		<link rel="stylesheet" type="text/css" href="/public/css/index.css">
+		
+		<script type="text/javascript" src="/public/js/jquery.js"></script>
+		<script type="text/javascript" src="/public/js/json2.js"></script>
+		<script type="text/javascript" src="/public/js/underscore.js"></script>
+		<script type="text/javascript" src="/public/js/backbone.js"></script>
+		<script type="text/javascript" src="/public/js/bootstrap.js"></script>
+
+		<script type="text/javascript">
+			(function() {
+				window.app = _.extend({}, Backbone.Events);
+			}());
+		</script>
+		
+		<script type="text/javascript" src="/public/js/templates.js"></script>
+		<script type="text/javascript" src="/public/js/app.js"></script>
+
+		<script type="text/javascript" src="/public/js/index.js"></script>
+	</head>
+	<body>
+		<nav class="navbar navbar-default navbar-static-top" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">iServe</a>
+				</div>
+
+				<!--<button type="button" class="btn btn-default navbar-btn">
+					<span class="glyphicon glyphicon-plus"></span>
+				</button>
+
+				<button type="button" class="btn btn-default navbar-btn">
+					Edit
+				</button>-->
+			</div>
+		</nav>
+
+		<div class="container">
+			<div class="row" id="albums-container"></div>
+		</div>
+	</body>
 </html>

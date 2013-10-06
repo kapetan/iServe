@@ -36,6 +36,8 @@
 		C567C35117FE097700BFAF6A /* NSArray+ISCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = C567C35017FE097600BFAF6A /* NSArray+ISCollection.m */; };
 		C567C35417FF558300BFAF6A /* NSDictionary+ISCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = C567C35317FF558300BFAF6A /* NSDictionary+ISCollection.m */; };
 		C567C35A1800623100BFAF6A /* ISImage.m in Sources */ = {isa = PBXBuildFile; fileRef = C567C3591800623100BFAF6A /* ISImage.m */; };
+		C567C35C1800B39900BFAF6A /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = C567C35B1800B39900BFAF6A /* index.html */; };
+		C567C35E1800B67400BFAF6A /* app.js in Sources */ = {isa = PBXBuildFile; fileRef = C567C35D1800B67400BFAF6A /* app.js */; };
 		C5E2C69D17F6236A0026FF35 /* ISServer.m in Sources */ = {isa = PBXBuildFile; fileRef = C5E2C69C17F6236A0026FF35 /* ISServer.m */; };
 		C5E2C6A017F866F70026FF35 /* ISAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = C5E2C69F17F866F70026FF35 /* ISAlbum.m */; };
 		C5E2C6A317F8671C0026FF35 /* ISFile.m in Sources */ = {isa = PBXBuildFile; fileRef = C5E2C6A217F8671C0026FF35 /* ISFile.m */; };
@@ -91,6 +93,8 @@
 		C567C35317FF558300BFAF6A /* NSDictionary+ISCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+ISCollection.m"; sourceTree = "<group>"; };
 		C567C3581800623100BFAF6A /* ISImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISImage.h; sourceTree = "<group>"; };
 		C567C3591800623100BFAF6A /* ISImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISImage.m; sourceTree = "<group>"; };
+		C567C35B1800B39900BFAF6A /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = index.html; path = iServe/assets/public/index.html; sourceTree = "<group>"; };
+		C567C35D1800B67400BFAF6A /* app.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = app.js; path = iServe/assets/public/js/app.js; sourceTree = "<group>"; };
 		C5E2C69B17F6236A0026FF35 /* ISServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISServer.h; sourceTree = "<group>"; };
 		C5E2C69C17F6236A0026FF35 /* ISServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISServer.m; sourceTree = "<group>"; };
 		C5E2C69E17F866F70026FF35 /* ISAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISAlbum.h; sourceTree = "<group>"; };
@@ -126,6 +130,8 @@
 		C53BB2731795F6F7003F985B = {
 			isa = PBXGroup;
 			children = (
+				C567C35D1800B67400BFAF6A /* app.js */,
+				C567C35B1800B39900BFAF6A /* index.html */,
 				C55B76D71797EE2B0001ADE9 /* AssetsLibrary.framework */,
 				C53BB2851795F6F7003F985B /* iServe */,
 				C53BB27E1795F6F7003F985B /* Frameworks */,
@@ -291,6 +297,7 @@
 				C53BB29F1795F6F7003F985B /* ViewController_iPad.xib in Resources */,
 				C567C34A17FCAC0E00BFAF6A /* mimetypes.json in Resources */,
 				C567C34B17FCAC0E00BFAF6A /* public in Resources */,
+				C567C35C1800B39900BFAF6A /* index.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,6 +328,7 @@
 				C567C35117FE097700BFAF6A /* NSArray+ISCollection.m in Sources */,
 				C567C35417FF558300BFAF6A /* NSDictionary+ISCollection.m in Sources */,
 				C567C35A1800623100BFAF6A /* ISImage.m in Sources */,
+				C567C35E1800B67400BFAF6A /* app.js in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

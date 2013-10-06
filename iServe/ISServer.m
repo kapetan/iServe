@@ -154,6 +154,7 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
         [_router route:@"GET" path:@"/albums/thumbnail" request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getAlbumThumbnail:request response:response];
         }];
+        
         [_router route:@"GET" path:@"/files" request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getFiles:request response:response];
         }];
@@ -166,6 +167,7 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
         [_router route:@"GET" path:@"/files/data" request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getFileData:request response:response];
         }];
+        
         [_router route:@"GET" path:@"/*" request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getPublicFiles:request response:response];
         }];
