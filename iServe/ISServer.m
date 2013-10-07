@@ -203,7 +203,7 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
         albums = [albums mapObjectUsingBlock:^(ISAlbum *album, NSUInteger i) {
             return [album toDictionary:@{
                 @"files": AbsoluteUrl(request, @"/api/files", @{ @"album": album.url }),
-                    @"thumbnail": AbsoluteUrl(request, @"/api/albums/thumbnail", @{ @"album": album.url })
+                @"thumbnail": AbsoluteUrl(request, @"/api/albums/thumbnail", @{ @"album": album.url })
             }];
         }];
         
