@@ -6,7 +6,7 @@
 		},
 		routes: {
 			'': 'albums',
-			'files/:album': 'files'
+			'albums/:album': 'files'
 		},
 		albums: function() {
 			this.clear();
@@ -16,17 +16,29 @@
 			albumsView.render();
 			this._albums.fetch();
 		},
-		files: function(album) {
+		files: function(albumUrl) {
 			this.clear();
 
 			var self = this;
-			album = this._albums.get(album);
+			var album = this._albums.get(albumUrl);
 
-			album.getFiles({
-				success: function(files) {
-					var filesView = self._view = new app.views.FileCollection({ collection: files });
-					filesView.render();
-				}
+			var onalbum = function(album) {
+				album.getFiles({
+					success: function(files) {
+						var filesView = self._view = new app.views.FileCollection({ collection: files });
+						filesView.render();
+					}
+				});
+			};
+
+			if(album) {
+				return onalbum(album);
+			}
+
+			this._albums.fetch({ 
+				success: function(albums) {
+					onalbum(albums.get(albumUrl));
+				} 
 			});
 		},
 		clear: function() {
