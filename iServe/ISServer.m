@@ -148,23 +148,23 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
         
         _server.delegate = _router;
         
-        [_router route:@"GET" path:@"/albums" request:^(HttpServerRequest *request, HttpServerResponse *response) {
+        [_router route:@"GET" path:@"/api/albums" request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getAlbums:request response:response];
         }];
-        [_router route:@"GET" path:@"/albums/thumbnail" request:^(HttpServerRequest *request, HttpServerResponse *response) {
+        [_router route:@"GET" path:@"/api/albums/thumbnail" request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getAlbumThumbnail:request response:response];
         }];
         
-        [_router route:@"GET" path:@"/files" request:^(HttpServerRequest *request, HttpServerResponse *response) {
+        [_router route:@"GET" path:@"/api/files" request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getFiles:request response:response];
         }];
-        [_router route:@"GET" path:@"/files/thumbnail" request:^(HttpServerRequest *request, HttpServerResponse *response) {
+        [_router route:@"GET" path:@"/api/files/thumbnail" request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getFileThumbnail:request response:response];
         }];
-        [_router route:@"GET" path:@"/files/image" request:^(HttpServerRequest *request, HttpServerResponse *response) {
+        [_router route:@"GET" path:@"/api/files/image" request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getFileImage:request response:response];
         }];
-        [_router route:@"GET" path:@"/files/data" request:^(HttpServerRequest *request, HttpServerResponse *response) {
+        [_router route:@"GET" path:@"/api/files/data" request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getFileData:request response:response];
         }];
         
@@ -202,8 +202,8 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
         
         albums = [albums mapObjectUsingBlock:^(ISAlbum *album, NSUInteger i) {
             return [album toDictionary:@{
-                @"files": AbsoluteUrl(request, @"/files", @{ @"album": album.url }),
-                    @"thumbnail": AbsoluteUrl(request, @"/albums/thumbnail", @{ @"album": album.url })
+                @"files": AbsoluteUrl(request, @"/api/files", @{ @"album": album.url }),
+                    @"thumbnail": AbsoluteUrl(request, @"/api/albums/thumbnail", @{ @"album": album.url })
             }];
         }];
         
@@ -223,9 +223,9 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
      
         files = [files mapObjectUsingBlock:^(ISFile *file, NSUInteger i) {
             return [file toDictionary:@{
-                @"thumbnail": AbsoluteUrl(request, @"/files/thumbnail", @{ @"file": file.url }),
-                @"image": AbsoluteUrl(request, @"/files/image", @{ @"file": file.url }),
-                @"data": AbsoluteUrl(request, @"/files/data", @{ @"file" : file.url })
+                @"thumbnail": AbsoluteUrl(request, @"/api/files/thumbnail", @{ @"file": file.url }),
+                @"image": AbsoluteUrl(request, @"/api/files/image", @{ @"file": file.url }),
+                @"data": AbsoluteUrl(request, @"/api/files/data", @{ @"file" : file.url })
             }];
         }];
      

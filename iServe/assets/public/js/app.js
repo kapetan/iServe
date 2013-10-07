@@ -30,7 +30,7 @@
 
 		var AlbumCollection = Backbone.Collection.extend({
 			model: Album,
-			url: '/albums'
+			url: '/api/albums'
 		});
 
 		var File = Backbone.Model.extend({
@@ -39,7 +39,7 @@
 
 		var FileCollection = Backbone.Collection.extend({
 			model: File,
-			url: '/files'
+			url: '/api/files'
 		});
 
 		app.models.Album = Album;
