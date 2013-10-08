@@ -1,12 +1,16 @@
-(function() {
-	var ApplicationRouter = Backbone.Router.extend({
+$(function() {
+	app.content = new app.views.ContentView('#main-container');
+	Backbone.history.start({ root: '/public/index.html' });
+
+	/*var ApplicationRouter = Backbone.Router.extend({
 		initialize: function() {
 			this._albums = new app.models.AlbumCollection();
 			this._view = null;
 		},
 		routes: {
-			'': 'albums',
-			'albums/:album': 'files'
+			'albums': 'albums',
+			'files/:album': 'files',
+			'files/:album/:file': 'file'
 		},
 		albums: function() {
 			this.clear();
@@ -53,5 +57,5 @@
 		})
 		.fail(function(err) {
 			alert(err.message);
-		});
-}());
+		});*/
+});

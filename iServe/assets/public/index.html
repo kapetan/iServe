@@ -13,14 +13,30 @@
 		<script type="text/javascript" src="/public/js/lib/backbone.js"></script>
 		<script type="text/javascript" src="/public/js/lib/bootstrap.js"></script>
 
+		<script type="text/javascript" src="/public/templates"></script>
+
 		<script type="text/javascript">
 			(function() {
-				window.app = _.extend({}, Backbone.Events);
+				window.app = _.extend({
+					controllers: {},
+					models: {},
+					views: {},
+					templates: window._templates 
+				}, Backbone.Events);
 			}());
 		</script>
+
+		<script type="text/javascript" src="/public/js/app/content.js"></script>
 		
-		<script type="text/javascript" src="/public/js/templates.js"></script>
-		<script type="text/javascript" src="/public/js/app.js"></script>
+		<script type="text/javascript" src="/public/js/app/albums/controller.js"></script>
+		<script type="text/javascript" src="/public/js/app/albums/models.js"></script>
+		<script type="text/javascript" src="/public/js/app/albums/views.js"></script>
+
+		<script type="text/javascript" src="/public/js/app/files/controller.js"></script>
+		<script type="text/javascript" src="/public/js/app/files/models.js"></script>
+		<script type="text/javascript" src="/public/js/app/files/views.js"></script>
+
+		<script type="text/javascript" src="/public/js/app/router.js"></script>
 
 		<script type="text/javascript" src="/public/js/index.js"></script>
 	</head>

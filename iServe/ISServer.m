@@ -39,6 +39,47 @@ NSString *AbsoluteUrl(HttpServerRequest *request, NSString *path, NSDictionary *
     return [NSString stringWithFormat:@"http://%@%@?%@", host, path, SerializeQuery(query)];
 }
 
+NSDictionary *SerializeDirectory(NSString *path, BOOL hidden, NSError **error) {
+    NSFileManager *fs = [NSFileManager defaultManager];
+    NSError *fsError = nil;
+    NSMutableDictionary *directory = [NSMutableDictionary dictionary];
+    
+    NSArray *files = [fs contentsOfDirectoryAtPath:path error:&fsError];
+    
+    if(fsError) {
+        if(error != NULL) *error = fsError;
+        return nil;
+    }
+    
+    for (NSString* fileName in files) {
+        NSString *filePath = [path stringByAppendingPathComponent:fileName];
+        
+        if(!hidden && [filePath hasPrefix:@"."]) {
+            continue;
+        }
+        
+        BOOL isDirectory = NO;
+        [fs fileExistsAtPath:filePath isDirectory:&isDirectory];
+        
+        id content = nil;
+        
+        if(isDirectory) {
+            content = SerializeDirectory(filePath, hidden, &fsError);
+        } else {
+            content = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:&fsError];
+        }
+        
+        if(fsError) {
+            if(error != NULL) *error = fsError;
+            return nil;
+        }
+        
+        [directory setValue:content forKey:fileName];
+    }
+    
+    return directory;
+}
+
 void RenderData(HttpServerResponse *response, HttpStatusCode status, NSData *body) {
     NSString *length = [NSString stringWithFormat:@"%lu", (unsigned long)[body length]];
     
@@ -61,8 +102,7 @@ void RenderJson(HttpServerResponse *response, HttpStatusCode status, id body) {
     NSError *error = nil;
     NSData *json = [NSJSONSerialization dataWithJSONObject:body options:0 error:&error];
     
-    if(error) {
-        RenderString(response, HttpStatusCodeInternalServerError, [error localizedDescription]);
+    if(ServerError(response, error)) {
         return;
     }
 
@@ -168,6 +208,10 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
             [self getFileData:request response:response];
         }];
         
+        [_router route:@"GET" path:@"/public/templates" request:^(HttpServerRequest *request, HttpServerResponse *response) {
+            [self getTemplates:request response:response];
+        }];
+        
         [_router route:@"GET" path:@"/*" request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getPublicFiles:request response:response];
         }];
@@ -194,6 +238,27 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
     [response.header setValue:mimeType forField:@"Content-Type"];
     
     RenderData(response, HttpStatusCodeOk, file);
+}
+
+-(void) getTemplates:(HttpServerRequest *)request response:(HttpServerResponse *)response {
+    NSError *error = nil;
+    NSDictionary *directory = SerializeDirectory(AssetsPath(@"/public/templates"), NO, &error);
+    
+    if(ServerError(response, error)) {
+        return;
+    }
+    
+    NSData *json = [NSJSONSerialization dataWithJSONObject:directory options:0 error:&error];
+    
+    if(ServerError(response, error)) {
+        return;
+    }
+    
+    NSMutableData *body = [[@"window._templates = " dataUsingEncoding:NSUTF8StringEncoding] mutableCopy];
+    [body appendData:json];
+    
+    [response.header setValue:@"application/javascript" forField:@"Content-Type"];
+    RenderData(response, HttpStatusCodeOk, body);
 }
 
 -(void) getAlbums:(HttpServerRequest*)request response:(HttpServerResponse*)response {
