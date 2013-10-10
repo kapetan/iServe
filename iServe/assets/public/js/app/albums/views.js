@@ -1,15 +1,17 @@
 (function() {
-	var AlbumView = Backbone.View.extend({
+	var AlbumView = app.views.BaseView.extend({
 		template: _.template(app.templates['album.html']),
 		render: function() {
 			var album = this.template({ album: this.model.attributes });
+
+			this.$el.remove();
 			this.setElement(album);
 
 			return this;
 		}
 	});
 
-	var AlbumGridView = Backbone.View.extend({
+	var AlbumGridView = app.views.BaseView.extend({
 		tagName: 'div',
 		className: 'row',
 		id: 'albums-container',
@@ -22,10 +24,13 @@
 			return this;
 		},
 		renderAllAlbums: function() {
+			this.$el.empty();
 			this.collection.each(this.renderAlbum, this);
 		},
 		renderAlbum: function(album) {
 			var view = new AlbumView({ model: album });
+
+			this.views.push(view);
 			this.$el.append(view.render().el);
 		}
 	});

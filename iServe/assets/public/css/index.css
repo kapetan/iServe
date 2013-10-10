@@ -1,3 +1,34 @@
+.centered {
+	text-align: center;
+}
+
+.pull-none {
+	float: none !important;
+}
+
+.mtm {
+	margin-top: 10px;
+}
+.mtl {
+	margin-top: 20px;
+}
+
+.mbm {
+	margin-bottom: 10px;
+}
+.mbl {
+	margin-bottom: 20px;
+}
+
+.navbar-title {
+	color: #777;
+	margin: 0;
+	display: block;
+	font-size: 18px;
+	line-height: 20px;
+	padding: 15px;
+}
+
 .resource-container {
 	margin-bottom: 30px;
 }

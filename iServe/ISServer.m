@@ -36,7 +36,13 @@ NSString *AbsoluteUrl(HttpServerRequest *request, NSString *path, NSDictionary *
         return nil;
     }
     
-    return [NSString stringWithFormat:@"http://%@%@?%@", host, path, SerializeQuery(query)];
+    NSString *url = [NSString stringWithFormat:@"http://%@%@", host, path];
+    
+    if(query && [query count]) {
+        return [url stringByAppendingFormat:@"?%@", SerializeQuery(query)];
+    }
+    
+    return url;
 }
 
 NSDictionary *SerializeDirectory(NSString *path, BOOL hidden, NSError **error) {
@@ -188,31 +194,44 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
         
         _server.delegate = _router;
         
-        [_router route:@"GET" path:@"/api/albums" request:^(HttpServerRequest *request, HttpServerResponse *response) {
+        [_router matchMethod:@"GET" path:@"/api/albums" request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getAlbums:request response:response];
         }];
-        [_router route:@"GET" path:@"/api/albums/thumbnail" request:^(HttpServerRequest *request, HttpServerResponse *response) {
+        [_router matchMethod:@"GET" path:@"/api/albums/thumbnail"
+                     request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getAlbumThumbnail:request response:response];
         }];
         
-        [_router route:@"GET" path:@"/api/files" request:^(HttpServerRequest *request, HttpServerResponse *response) {
+        [_router matchMethod:@"GET" path:@"/api/files" request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getFiles:request response:response];
         }];
-        [_router route:@"GET" path:@"/api/files/thumbnail" request:^(HttpServerRequest *request, HttpServerResponse *response) {
+        [_router matchMethod:@"GET" path:@"/api/files/thumbnail"
+                     request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getFileThumbnail:request response:response];
         }];
-        [_router route:@"GET" path:@"/api/files/image" request:^(HttpServerRequest *request, HttpServerResponse *response) {
+        [_router matchMethod:@"GET" path:@"/api/files/image"
+                     request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getFileImage:request response:response];
         }];
-        [_router route:@"GET" path:@"/api/files/data" request:^(HttpServerRequest *request, HttpServerResponse *response) {
+        [_router matchMethod:@"GET" path:@"/api/files/data" request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getFileData:request response:response];
         }];
         
-        [_router route:@"GET" path:@"/public/templates" request:^(HttpServerRequest *request, HttpServerResponse *response) {
+        [_router matchMethod:@"GET" path:@"/public/templates" request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getTemplates:request response:response];
         }];
         
-        [_router route:@"GET" path:@"/*" request:^(HttpServerRequest *request, HttpServerResponse *response) {
+        [_router matchMethod:@"GET" path:@[@"/app/*", @"/app"]
+                     request:^(HttpServerRequest *request, HttpServerResponse *response) {
+            [_router routeRequest:request response:response toMethod:@"GET" path:@"/public/index.html"];
+        }];
+        [_router matchMethod:@"GET" path:@"/" request:^(HttpServerRequest *request, HttpServerResponse *response) {
+            [response writeHeaderStatus:HttpStatusCodeFound
+                                headers:@{ @"Location": AbsoluteUrl(request, @"/app", nil) }];
+            [response end];
+        }];
+        
+        [_router matchMethod:@"GET" path:@"/*" request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getPublicFiles:request response:response];
         }];
     }

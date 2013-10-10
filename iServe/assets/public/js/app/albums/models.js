@@ -1,7 +1,6 @@
 (function() {
 	var Album = Backbone.Model.extend({
 		idAttribute: 'url',
-
 		getFiles: function(options) {
 			options = options || {};
 			var data = options.data || {};

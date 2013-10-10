@@ -6,7 +6,9 @@
 			albums.fetch({
 				success: function() {
 					var view = new app.views.AlbumGridView({ collection: albums });
-					app.content.render(view.render().el);
+
+					app.header.clear();
+					app.content.render(view.render());
 				}
 			});
 		}

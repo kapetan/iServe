@@ -1,5 +1,9 @@
 (function() {
 	var ApplicationRouter = Backbone.Router.extend({
+		initialize: function() {
+			this._albums = new app.models.AlbumCollection();
+			this._view = null;
+		},
 		routes: {
 			'albums(/)': 'albums',
 			'files/:album(/)': 'files',

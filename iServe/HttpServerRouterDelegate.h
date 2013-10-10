@@ -13,6 +13,9 @@
 typedef void (^HttpServerResolveBlock)(HttpServerRequest *, HttpServerResponse *);
 
 @interface HttpServerRouterDelegate : NSObject <HttpServerDelegate>
--(void) route:(NSString *)method path:(NSString*)path request:(HttpServerResolveBlock)request;
--(void) resolveRequest:(HttpServerRequest*)request response:(HttpServerResponse*)response;
+-(void) matchMethod:(id)method path:(id)path request:(HttpServerResolveBlock)request;
+
+-(void) routeRequest:(HttpServerRequest*)request response:(HttpServerResponse*)response;
+-(void) routeRequest:(HttpServerRequest*)request response:(HttpServerResponse*)response
+            toMethod:(NSString*)method path:(NSString*)path;
 @end

@@ -33,7 +33,8 @@
 -(id) initWithMethod:(NSString*)method path:(NSString*)path block:(HttpServerResolveBlock)block {
     if(self = [super init]) {
         self->_method = [method retain];
-        self->_path = [[NSPredicate predicateWithFormat:@"SELF LIKE %@", path] retain];
+        self->_path = [[NSPredicate predicateWithFormat:@"(SELF LIKE[c] %@) OR (SELF LIKE[c] %@)",
+                        path, [path stringByAppendingString:@"/"]] retain];
         self->_block = [block copy];
     }
     
@@ -71,19 +72,22 @@
     return self;
 }
 
--(void) route:(NSString *)method path:(NSString *)path request:(HttpServerResolveBlock)request {
-    NSMutableArray *paths = [_routes objectForKey:method];
-    
-    if(!paths) {
-        paths = [NSMutableArray array];
-        [_routes setObject:paths forKey:method];
+-(void) matchMethod:(id)method path:(id)path request:(HttpServerResolveBlock)request {
+    if(![method isKindOfClass:[NSArray class]]) {
+        method = [NSArray arrayWithObject:method];
+    }
+    if(![path isKindOfClass:[NSArray class]]) {
+        path = [NSArray arrayWithObject:path];
     }
     
-    Route *route = [[Route alloc] initWithMethod:method path:path block:request];
-    [paths addObject:[route autorelease]];
+    for (NSString *m in method) {
+        for (NSString *p in path) {
+            [self matchSingleMethod:m path:p request:request];
+        }
+    }
 }
 
--(void) resolveRequest:(HttpServerRequest *)request response:(HttpServerResponse *)response {
+-(void) routeRequest:(HttpServerRequest *)request response:(HttpServerResponse *)response {
     NSArray *paths = [_routes objectForKey:request.header.method];
     
     for (Route *route in paths) {
@@ -98,8 +102,18 @@
     [_notFound getBlock](request, response);
 }
 
+-(void) routeRequest:(HttpServerRequest *)request response:(HttpServerResponse *)response
+            toMethod:(NSString *)method path:(NSString *)path {
+    HttpUrl *url = [[HttpUrl alloc] initWithPathname:path query:request.header.url.query];
+    
+    request.header.method = method;
+    request.header.url = [url autorelease];
+    
+    [self routeRequest:request response:response];
+}
+
 -(void) server:(HttpServer *)server request:(HttpServerRequest *)request response:(HttpServerResponse *)response {
-    [self resolveRequest:request response:response];
+    [self routeRequest:request response:response];
 }
 
 -(void) server:(HttpServer *)server acceptedConnection:(TcpConnection *)connection {}
@@ -109,6 +123,18 @@
 -(void) server:(HttpServer *)server errorOccurred:(NSError *)error {}
 
 -(void) serverDidClose:(HttpServer *)server {}
+
+-(void) matchSingleMethod:(NSString *)method path:(NSString *)path request:(HttpServerResolveBlock)request {
+    NSMutableArray *paths = [_routes objectForKey:method];
+    
+    if(!paths) {
+        paths = [NSMutableArray array];
+        [_routes setObject:paths forKey:method];
+    }
+    
+    Route *route = [[Route alloc] initWithMethod:method path:path block:request];
+    [paths addObject:[route autorelease]];
+}
 
 -(void) dealloc {
     [_routes release];
