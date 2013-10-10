@@ -1,13 +1,13 @@
 (function() {
 	var ApplicationRouter = Backbone.Router.extend({
-		initialize: function() {
-			this._albums = new app.models.AlbumCollection();
-			this._view = null;
-		},
 		routes: {
+			'(/)': 'root',
 			'albums(/)': 'albums',
 			'files/:album(/)': 'files',
 			'files/:album/:file(/)': 'file'
+		},
+		root: function() {
+			window.location.href = '/app/albums';
 		},
 		albums: function() {
 			app.controllers.albums.index();
