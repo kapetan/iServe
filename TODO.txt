@@ -1,0 +1,19 @@
+TODO
+
+- Create iOS UI
+
+- Add navigation to files show (previous, next and file x of y)
+- Add gear dropdown to files (direct download and other actions)
+
+- Add password protection to web app
+
+- Refactor response functions (e.g. RenderData) to categories extending HttpServerResponse
+- Update server routes to be more REST (similar to client routes)
+- Make albums and assets writable
+	* Create file in existing album and write data to it
+	* Delete file
+	* Create album
+	* Delete album
+	* Rename album
+
+- Support other file types (videos, maybe audio)
