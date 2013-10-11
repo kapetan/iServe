@@ -1,10 +1,10 @@
 (function() {
 	var ApplicationRouter = Backbone.Router.extend({
 		routes: {
-			'(/)': 'root',
-			'albums(/)': 'albums',
-			'files/:album(/)': 'files',
-			'files/:album/:file(/)': 'file'
+			'app(/)': 'root',
+			'app/albums(/)': 'albums',
+			'app/files/:album(/)': 'files',
+			'app/files/:album/:file(/)': 'file'
 		},
 		root: function() {
 			window.location.href = '/app/albums';
