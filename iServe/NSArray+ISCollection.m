@@ -9,7 +9,7 @@
 #import "NSArray+ISCollection.h"
 
 @implementation NSArray (ISCollection)
--(NSArray*) mapObjectUsingBlock:(id (^)(id, NSUInteger))block {
+-(NSArray*) mapObjectsUsingBlock:(id (^)(id, NSUInteger))block {
     NSMutableArray *result = [NSMutableArray arrayWithCapacity:[self count]];
     
     [self enumerateObjectsUsingBlock:^(id obj, NSUInteger i, BOOL *stop) {

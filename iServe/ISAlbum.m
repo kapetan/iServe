@@ -108,7 +108,11 @@ const ALAssetsGroupType GROUP_TYPES = ALAssetsGroupAlbum | ALAssetsGroupSavedPho
 }
 
 -(NSDictionary*) toDictionary {
-    return @{ @"name": self.name, @"url": self.url };
+    return @{
+        @"name": self.name,
+        @"url": self.url,
+        @"numberOfFiles": [NSNumber numberWithInt:[self numberOfFiles]]
+    };
 }
 
 -(NSDictionary*) toDictionary:(NSDictionary*)dictionary {

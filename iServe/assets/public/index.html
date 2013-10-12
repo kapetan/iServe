@@ -20,14 +20,17 @@
 				window.app = _.extend({
 					controllers: {},
 					models: {},
-					views: {},
-					templates: window._templates 
+					views: {}
 				}, Backbone.Events);
 			}());
 		</script>
 
+		<script type="text/javascript" src="/public/js/app/shared/helpers.js"></script>
+		<script type="text/javascript" src="/public/js/app/shared/templates.js"></script>
+
 		<script type="text/javascript" src="/public/js/app/shared/base-view.js"></script>
 		<script type="text/javascript" src="/public/js/app/shared/content-view.js"></script>
+		<script type="text/javascript" src="/public/js/app/shared/template-view.js"></script>
 		
 		<script type="text/javascript" src="/public/js/app/albums/controller.js"></script>
 		<script type="text/javascript" src="/public/js/app/albums/models.js"></script>

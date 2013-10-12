@@ -170,7 +170,12 @@ ISImageScaleMode DEFAULT_THUMBNAIL_MODE = ISImageScaleModeCover;
 }
 
 -(NSDictionary*) toDictionary {
-    return @{ @"name" : self.name, @"url": self.url, @"created": [self.created description], @"type": self.type };
+    return @{
+        @"name" : self.name,
+        @"url": self.url,
+        @"created": [self.created description],
+        @"type": self.type
+    };
 }
 
 -(NSDictionary*) toDictionary:(NSDictionary*)dictionary {

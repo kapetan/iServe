@@ -1,13 +1,7 @@
 (function() {
-	var FileView = app.views.BaseView.extend({
-		template: _.template(app.templates['file.html']),
-		render: function() {
-			var file = this.template({ file: this.model.attributes, album: this.options.album.attributes });
-
-			this.$el.remove();
-			this.setElement(file);
-
-			return this;
+	var FileView = app.views.TemplateView.extend({
+		template: function() {
+			return app.templates['file.html']({ file: this.model.attributes, album: this.options.album.attributes });
 		}
 	});
 
@@ -35,27 +29,30 @@
 		}
 	});
 
-	var FilesHeaderView = app.views.BaseView.extend({
-		template: _.template(app.templates['files-header.html']),
-		render: function() {
-			var header = this.template({ album: this.model.attributes });
-
-			this.$el.remove();
-			this.setElement(header);
-
-			return this;
+	var FilesHeaderView = app.views.TemplateView.extend({
+		template: function() {
+			return app.templates['files-header.html']({ album: this.model.attributes });
 		}
 	});
 
-	var FilesShowView = app.views.BaseView.extend({
-		template: _.template(app.templates['files-show.html']),
-		render: function() {
-			var file = this.template({ file: this.model.attributes });
+	var FilesShowView = app.views.TemplateView.extend({
+		template: function() {
+			return app.templates['files-show.html']({ file: this.model.attributes });
+		}
+	});
 
-			this.$el.remove();
-			this.setElement(file);
+	var FilesShowHeaderView = app.views.TemplateView.extend({
+		template: function() {
+			var first = this.options.current === 0;
+			var last = this.options.current === this.collection.length - 1;
 
-			return this;
+			return app.templates['files-show-header.html']({ 
+				album: this.options.album.attributes, 
+				files: this.collection.toJSON(), 
+				current: this.options.current,
+				first: first,
+				last: last
+			});
 		}
 	});
 
@@ -63,4 +60,5 @@
 	app.views.FileGridView = FileGridView;
 	app.views.FilesHeaderView = FilesHeaderView;
 	app.views.FilesShowView = FilesShowView;
+	app.views.FilesShowHeaderView = FilesShowHeaderView;
 }());

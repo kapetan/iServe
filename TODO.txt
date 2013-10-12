@@ -2,10 +2,17 @@ TODO
 
 - Create iOS UI
 
-- Add navigation to files show (previous, next and file x of y)
-- Add gear dropdown to files (direct download and other actions)
+DONE - Add helpers methods to views
+DONE - Add navigation to files show (previous, next and file x of y)
+DONE - Add gear dropdown to files (direct download and other actions)
+- Add number of files badge to albums
 
 - Add password protection to web app
+- Cache static files and images
+- Improve album and file ids for prettier urls
+- Add cross origin support to server
+- Make thumburl accept dimensions
+- Create error page for web page (no assets permission)
 
 - Refactor response functions (e.g. RenderData) to categories extending HttpServerResponse
 - Update server routes to be more REST (similar to client routes)

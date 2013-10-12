@@ -16,6 +16,7 @@
 #import "ISAlbum.h"
 #import "ISFile.h"
 
+#import "NSDictionary+ISCollection.h"
 #import "NSArray+ISCollection.h"
 #import "ISMimeTypes.h"
 
@@ -284,10 +285,12 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
     [ISAlbum getAllUsingAssetsLibrary:_assetsLibrary block:^(NSArray *albums, NSError *error) {
         HTTP_ERROR(albums);
         
-        albums = [albums mapObjectUsingBlock:^(ISAlbum *album, NSUInteger i) {
+        albums = [albums mapObjectsUsingBlock:^(ISAlbum *album, NSUInteger i) {
+            NSDictionary *query = @{ @"album": album.url };
+            
             return [album toDictionary:@{
-                @"files": AbsoluteUrl(request, @"/api/files", @{ @"album": album.url }),
-                @"thumbnail": AbsoluteUrl(request, @"/api/albums/thumbnail", @{ @"album": album.url })
+                @"files": AbsoluteUrl(request, @"/api/files", query),
+                @"thumbnail": AbsoluteUrl(request, @"/api/albums/thumbnail", query)
             }];
         }];
         
@@ -305,11 +308,15 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
     [ISFile getAllUsingAssetsLibrary:_assetsLibrary byAlbumUrl:albumUrl block:^(NSArray *files, NSError *error) {
         HTTP_ERROR(files);
      
-        files = [files mapObjectUsingBlock:^(ISFile *file, NSUInteger i) {
+        files = [files mapObjectsUsingBlock:^(ISFile *file, NSUInteger i) {
+            NSDictionary *query = @{ @"file": file.url };
+            
             return [file toDictionary:@{
-                @"thumbnail": AbsoluteUrl(request, @"/api/files/thumbnail", @{ @"file": file.url }),
-                @"image": AbsoluteUrl(request, @"/api/files/image", @{ @"file": file.url }),
-                @"data": AbsoluteUrl(request, @"/api/files/data", @{ @"file" : file.url })
+                @"thumbnail": AbsoluteUrl(request, @"/api/files/thumbnail", query),
+                @"image": AbsoluteUrl(request, @"/api/files/image", query),
+                @"data": AbsoluteUrl(request, @"/api/files/data", query),
+                @"download": AbsoluteUrl(request, @"/api/files/data",
+                                         [query mergeWithEntriesFromDictionary:@{ @"download" : @"1" }])
             }];
         }];
      
@@ -364,6 +371,11 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
     
     [ISFile getUsingAssetsLibrary:_assetsLibrary byUrl:fileUrl block:^(ISFile *file, NSError *error) {
         HTTP_ERROR(file);
+        
+        if([request.header.url.query objectForKey:@"download"]) {
+            [response.header setValue:[NSString stringWithFormat:@"attachment; filename=\"%@\"", file.name]
+                        forField:@"Content-Disposition"];
+        }
         
         [response writeHeaderStatus:HttpStatusCodeOk headers:@{
             @"Content-Type": [_mimeTypes mimeTypeForExtension:file.extension],

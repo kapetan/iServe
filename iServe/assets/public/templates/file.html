@@ -1,5 +1,19 @@
 <div class="col-sm-3 col-md-2 file-resource resource-container">
-	<a href="/app/files/<%- encodeURIComponent(album.url) %>/<%- encodeURIComponent(file.url) %>" class="thumbnail">
+	<a href="<%- href('files', album.url, file.url) %>" class="thumbnail">
 		<div class="resource-thumbnail-image" style="background-image:url(<%- file.thumbnail %>);"></div>
 	</a>
+
+	<div class="btn-group resource-dropdown">
+		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+			<span class="glyphicon glyphicon-cog"></span>
+			<span class="caret"></span>
+		</button>
+
+		<ul class="dropdown-menu" role="menu">
+			<li><a href="<%- href('files', album.url, file.url) %>">View</a></li>
+			<li>
+				<a data-bypass href="<%- file.download %>">Download</a>
+			</li>
+		</ul>
+	</div>
 </div>

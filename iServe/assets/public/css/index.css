@@ -13,6 +13,13 @@
 	margin-top: 20px;
 }
 
+.mrm {
+	margin-right: 10px;
+}
+.mrl {
+	margin-right: 20px;
+}
+
 .mbm {
 	margin-bottom: 10px;
 }
@@ -20,8 +27,15 @@
 	margin-bottom: 20px;
 }
 
+.mlm {
+	margin-left: 10px;
+}
+.mll {
+	margin-left: 20px;
+}
+
 .navbar-title {
-	color: #777;
+	color: #333;
 	margin: 0;
 	display: block;
 	font-size: 18px;
@@ -31,6 +45,7 @@
 
 .resource-container {
 	margin-bottom: 30px;
+	position: relative;
 }
 .resource-container .resource-thumbnail-image {
 	box-sizing: border-box;
@@ -49,6 +64,8 @@
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	margin-top: 4px;
+	margin-bottom: 0;
 }
 
 .resource-container.album-resource .resource-thumbnail-image {
@@ -58,3 +75,41 @@
 .resource-container.file-resource .resource-thumbnail-image {
 	height: 155px;
 }
+
+.resource-container .resource-dropdown {
+	position: absolute;
+	top: 5px;
+	right: 20px;
+}
+.resource-container .resource-dropdown .btn {
+	padding: 3px 6px;
+	font-size: 12px;
+
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+	border-radius: 0;
+
+	-moz-border-bottom-left-radius: 10px;
+	-webkit-border-bottom-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+}
+.resource-container .resource-dropdown .caret {
+	margin-left: 5px;
+}
+
+/*.resource-container .resource-counter {
+	position: absolute;
+	top: 5px;
+	left: 20px;
+
+	padding: 3px 10px;
+	color: #333;
+	font-size: 12px;
+	font-weight: bold;
+	background-color: #fff;
+	border: 1px solid #ccc;
+
+	-moz-border-bottom-right-radius: 10px;
+	-webkit-border-bottom-right-radius: 10px;
+	border-bottom-left-right: 10px;
+}*/

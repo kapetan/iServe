@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 
 @interface NSArray (ISCollection)
--(NSArray*) mapObjectUsingBlock:(id (^)(id obj, NSUInteger i))block;
+-(NSArray*) mapObjectsUsingBlock:(id (^)(id obj, NSUInteger i))block;
 @end

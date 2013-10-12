@@ -25,32 +25,17 @@
 				app.header.render(header.render());
 				app.content.render(view.render());
 			});
-
-			/*var albums = new app.models.AlbumCollection();
-			var onalbum = function(album) {
-				album.getFiles({
-					success: function(files) {
-						var header = new app.views.FilesHeaderView({ model: album });
-						var view = new app.views.FileGridView({ collection: files });
-
-						app.header.render(header.render());
-						app.content.render(view.render());
-					}
-				});
-			};
-
-			albums.fetch({ 
-				success: function() {
-					onalbum(albums.get(album));
-				} 
-			});*/
 		},
 		show: function(album, file) {
 			fetchAlbum(album, function(album, files) {
 				file = files.get(file);
+
+				var current = files.indexOf(file);
+
+				var header = new app.views.FilesShowHeaderView({ album: album, collection: files, current: current });
 				var view = new app.views.FilesShowView({ model: file });
 
-				app.header.clear();
+				app.header.render(header.render());
 				app.content.render(view.render());
 			});
 		}

@@ -1,0 +1,12 @@
+<div class="collapse navbar-collapse">
+	<a href="<%- href('files', album.url) %>" class="btn btn-default navbar-btn pull-left mrm">Files</a>
+	<a href="<%- first ? 'javascript:void(0);' : href('files', album.url, files[current - 1].url) %>" 
+		class="btn btn-default navbar-btn pull-left <%- first ? 'disabled' : '' %>">Previous</a>
+
+	<a href="<%- last ? 'javascript:void(0);' : href('files', album.url, files[current + 1].url) %>" 
+		class="btn btn-default navbar-btn pull-right <%- last ? 'disabled' : '' %>">Next</a>	
+	
+	<span class="navbar-title centered pull-none">
+		<%- current + 1 %> of <%- files.length %>
+	</span>
+</div>

@@ -1,13 +1,7 @@
 (function() {
-	var AlbumView = app.views.BaseView.extend({
-		template: _.template(app.templates['album.html']),
-		render: function() {
-			var album = this.template({ album: this.model.attributes });
-
-			this.$el.remove();
-			this.setElement(album);
-
-			return this;
+	var AlbumView = app.views.TemplateView.extend({
+		template: function() {
+			return app.templates['album.html']({ album: this.model.attributes });
 		}
 	});
 
