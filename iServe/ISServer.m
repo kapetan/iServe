@@ -21,7 +21,7 @@
 #import "ISMimeTypes.h"
 
 #define HTTP_ERROR(resource) \
-    if(ServerError(response, error) || ResourceNotFound(response, resource)) return;
+    if(PermissionError(response, error) || ServerError(response, error) || ResourceNotFound(response, resource)) return;
 
 const NSUInteger DATA_BUFFER_LENGTH = 1024 * 1024;
 
@@ -144,6 +144,19 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
         delegate.drain = nil;
         [response end];
     }
+}
+
+BOOL PermissionError(HttpServerResponse *response, NSError *error) {
+    if(error && [[error domain] isEqualToString:ALAssetsLibraryErrorDomain]) {
+        NSInteger code = [error code];
+        
+        if(code == ALAssetsLibraryAccessGloballyDeniedError || code == ALAssetsLibraryAccessUserDeniedError) {
+            RenderJson(response, HttpStatusCodeForbidden, @{ @"message": [error localizedDescription] });
+            return YES;
+        }
+    }
+    
+    return NO;
 }
 
 BOOL ServerError(HttpServerResponse *response, NSError *error) {

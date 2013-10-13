@@ -2,6 +2,8 @@ TODO
 
 DONE - Create iOS UI
 
+- Better error handling in app (on server disconnect, no permission)
+
 DONE - Add helpers methods to views
 DONE - Add navigation to files show (previous, next and file x of y)
 DONE - Add gear dropdown to files (direct download and other actions)
@@ -13,6 +15,7 @@ DONE - Add gear dropdown to files (direct download and other actions)
 - Add cross origin support to server
 - Make thumburl accept dimensions
 - Create error page for web page (no assets permission)
+- Add client-side caching of albums and files
 
 - Refactor response functions (e.g. RenderData) to categories extending HttpServerResponse
 - Update server routes to be more REST (similar to client routes)
@@ -24,3 +27,4 @@ DONE - Add gear dropdown to files (direct download and other actions)
 	* Rename album
 
 - Support other file types (videos, maybe audio)
+- Support for zipping whole albums

@@ -10,6 +10,7 @@
 		};
 
 		albums.fetch({ 
+			error: app.controllers.errors.resource,
 			success: function() {
 				onalbum(albums.get(id));
 			} 
