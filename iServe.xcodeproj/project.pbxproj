@@ -18,7 +18,6 @@
 		C53BB2961795F6F7003F985B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C53BB2951795F6F7003F985B /* Default-568h@2x.png */; };
 		C53BB2991795F6F7003F985B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C53BB2981795F6F7003F985B /* ViewController.m */; };
 		C53BB29C1795F6F7003F985B /* ViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = C53BB29A1795F6F7003F985B /* ViewController_iPhone.xib */; };
-		C53BB29F1795F6F7003F985B /* ViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = C53BB29D1795F6F7003F985B /* ViewController_iPad.xib */; };
 		C55B76C8179754FC0001ADE9 /* HttpError.m in Sources */ = {isa = PBXBuildFile; fileRef = C55B76B4179754FC0001ADE9 /* HttpError.m */; };
 		C55B76C9179754FC0001ADE9 /* HttpHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = C55B76B6179754FC0001ADE9 /* HttpHeader.m */; };
 		C55B76CB179754FC0001ADE9 /* HttpServer.m in Sources */ = {isa = PBXBuildFile; fileRef = C55B76BA179754FC0001ADE9 /* HttpServer.m */; };
@@ -59,7 +58,6 @@
 		C53BB2971795F6F7003F985B /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		C53BB2981795F6F7003F985B /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		C53BB29B1795F6F7003F985B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController_iPhone.xib; sourceTree = "<group>"; };
-		C53BB29E1795F6F7003F985B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController_iPad.xib; sourceTree = "<group>"; };
 		C55B76B2179754FC0001ADE9 /* http-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "http-Prefix.pch"; sourceTree = "<group>"; };
 		C55B76B3179754FC0001ADE9 /* HttpError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpError.h; sourceTree = "<group>"; };
 		C55B76B4179754FC0001ADE9 /* HttpError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HttpError.m; sourceTree = "<group>"; };
@@ -164,7 +162,6 @@
 				C53BB2971795F6F7003F985B /* ViewController.h */,
 				C53BB2981795F6F7003F985B /* ViewController.m */,
 				C53BB29A1795F6F7003F985B /* ViewController_iPhone.xib */,
-				C53BB29D1795F6F7003F985B /* ViewController_iPad.xib */,
 				C53BB2861795F6F7003F985B /* Supporting Files */,
 				C537FE8917985B23000A7D25 /* assets */,
 			);
@@ -291,7 +288,6 @@
 				C53BB2941795F6F7003F985B /* Default@2x.png in Resources */,
 				C53BB2961795F6F7003F985B /* Default-568h@2x.png in Resources */,
 				C53BB29C1795F6F7003F985B /* ViewController_iPhone.xib in Resources */,
-				C53BB29F1795F6F7003F985B /* ViewController_iPad.xib in Resources */,
 				C567C34A17FCAC0E00BFAF6A /* mimetypes.json in Resources */,
 				C567C34B17FCAC0E00BFAF6A /* public in Resources */,
 				C567C35C1800B39900BFAF6A /* index.html in Resources */,
@@ -345,14 +341,6 @@
 				C53BB29B1795F6F7003F985B /* en */,
 			);
 			name = ViewController_iPhone.xib;
-			sourceTree = "<group>";
-		};
-		C53BB29D1795F6F7003F985B /* ViewController_iPad.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C53BB29E1795F6F7003F985B /* en */,
-			);
-			name = ViewController_iPad.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
