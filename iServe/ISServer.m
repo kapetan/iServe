@@ -279,6 +279,8 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
     
     [response.header setValue:@"application/javascript" forField:@"Content-Type"];
     RenderData(response, HttpStatusCodeOk, body);
+    
+    [body release];
 }
 
 -(void) getAlbums:(HttpServerRequest*)request response:(HttpServerResponse*)response {

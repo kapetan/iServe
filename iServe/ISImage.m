@@ -67,6 +67,7 @@ NSData *ISImageScale(CGImageRef image, ISImageSize target, ISImageScaleMode mode
     
     NSData *data = ISImageGetData(thumb, representation);
     
+    CGColorSpaceRelease(colorSpace);
     CGContextRelease(bitmap);
     CGImageRelease(thumb);
     
