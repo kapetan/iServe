@@ -18,13 +18,8 @@ const NSInteger ServerPort = 8080;
 
 const NSInteger NumberOfSections = 2;
 
-const NSInteger TextFieldTag = 1;
 const NSInteger TextFieldMaxLength = 5;
 const CGSize TextFieldSize = { 70, 30 };
-
-const NSInteger SwitchTag = 2;
-
-const NSInteger MarginRight = 12;
 
 typedef struct {
     NSInteger index;
@@ -82,7 +77,6 @@ NSString *FormatUrl(NSString *ip, NSString *port) {
 
 @implementation ViewController {
     ISServer *_server;
-    NSString *_ip;
     NSInteger _port;
     
     TableSection *_tableSections[NumberOfSections];
@@ -112,26 +106,41 @@ NSString *FormatUrl(NSString *ip, NSString *port) {
     _tableSections[_optionsSection->index] = _optionsSection;
     _tableSections[_addressSection->index] = _addressSection;
     
-    _ip = [IpAddress() retain];
+    _server = nil;
     _port = ServerPort;
-    
-    /*self.addressLabel.layer.cornerRadius = 10;
-    self.addressLabel.backgroundColor = [UIColor lightGrayColor];
-    self.addressLabel.text = [NSString stringWithFormat:@"http://%@:%i", IpAddress(), ServerPort];
-    
-    _server = [[ISServer alloc] init];
-    [_server listenOnPort:8080];*/
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
+-(NSString*) getAddress {
+    NSString *ip = IpAddress();
+    return FormatUrl(ip, [NSString stringWithFormat:@"%ld", (long)_port]);
+}
+
 /* Switch delegate */
 -(void) onOffValueChanged:(BOOL)on {
+    UITableViewCell *cell = [_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:_addressSection->index]];
     
+    if(on) {
+        _server = [[ISServer alloc] init];
+        [_server listenOnPort:_port];
+        
+        [cell.textLabel setText:[self getAddress]];
+    } else {
+        [_server close];
+        [_server release];
+        
+        _server = nil;
+        
+        [cell.textLabel setText:@"Not started"];
+    }
+}
+
+-(BOOL) isServerOn {
+    return !!_server;
 }
 
 /* Text field delegate */
@@ -148,7 +157,18 @@ NSString *FormatUrl(NSString *ip, NSString *port) {
 }
 
 -(void) textFieldDidEndEditing:(UITextField *)textField {
+    NSString *text = [textField text];
+    NSScanner *scanner = [NSScanner scannerWithString:text];
     
+    int port;
+    BOOL numeric = [scanner scanInt:&port] && [scanner isAtEnd];
+    
+    if(!numeric) {
+        [textField setText:[NSString stringWithFormat:@"%ld", (long)_port]];
+        return;
+    }
+    
+    _port = port;
 }
 
 /* Table view data source and delegate */
@@ -169,53 +189,71 @@ NSString *FormatUrl(NSString *ip, NSString *port) {
 }
 
 -(UITableViewCell*) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = nil;
+    
     if(indexPath.section == _optionsSection->index) {
         switch (indexPath.row) {
             case 0:
-                return [self createCellFieldViewWithId:@"CellField" text:@"Port"
-                                           defaultText:[NSString stringWithFormat:@"%ld", (long)ServerPort]];
+                cell = [self reuseCellWithId:@"CellField" orCreateUsingSelector:@selector(createCellFieldViewWithId:)];
+                UITextField *field = (UITextField*) cell.accessoryView;
+                
+                [field setText:[NSString stringWithFormat:@"%ld", (long)_port]];
+                [cell.textLabel setText:@"Port"];
+                
+                break;
             case 1:
-                return [self createCellDefaultWithId:@"CellDefault" text:@"Server" defaultValue:@"Off"];
+                cell = [self reuseCellWithId:@"CellDefault" orCreateUsingSelector:@selector(createCellDefaultWithId:)];
+                
+                [cell.textLabel setText:@"Server"];
+                [cell.detailTextLabel setText:[self isServerOn] ? @"On" : @"Off"];
+                
+                break;
         }
     } else if(indexPath.section == _addressSection->index) {
-        return [self createCellLabelWithId:@"CellLabel"
-                                      text:FormatUrl(_ip, [NSString stringWithFormat:@"%ld", (long)_port])];
+        cell = [self reuseCellWithId:@"CellLabel" orCreateUsingSelector:@selector(createCellLabelWithId:)];
+        
+        NSString *text = [self isServerOn] ? [self getAddress] : @"Not started";
+        
+        [cell.textLabel setText:text];
     }
     
-    return nil;
+    return cell;
 }
 
--(UITableViewCell*) createCellFieldViewWithId:(NSString*)cellId text:(NSString*)text defaultText:(NSString*)defaultText {
+-(UITableViewCell*) reuseCellWithId:(NSString*)cellId orCreateUsingSelector:(SEL)selector {
+    UITableViewCell *cell = [_tableView dequeueReusableCellWithIdentifier:cellId];
+    
+    if(!cell) {
+        cell = [self performSelector:selector withObject:cellId];
+    }
+    
+    return cell;
+}
+
+-(UITableViewCell*) createCellFieldViewWithId:(NSString*)cellId {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId];
     UITextField *field = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, TextFieldSize.width, TextFieldSize.height)];
     
     field.delegate = self;
     field.textAlignment = NSTextAlignmentRight;
     
-    [field setText:defaultText];
-    
     cell.accessoryView = field;
-    [cell.textLabel setText:text];
     
     return [cell autorelease];
 }
 
--(UITableViewCell*) createCellLabelWithId:(NSString*)cellId text:(NSString*)text {
+-(UITableViewCell*) createCellLabelWithId:(NSString*)cellId {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.font = [UIFont fontWithName:@"Verdana" size:16];
     cell.textLabel.textAlignment = NSTextAlignmentCenter;
-    [cell.textLabel setText:text];
     
     return [cell autorelease];
 }
 
--(UITableViewCell*) createCellDefaultWithId:(NSString*)cellId text:(NSString*)text defaultValue:(NSString*)value {
+-(UITableViewCell*) createCellDefaultWithId:(NSString*)cellId {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellId];
-    
-    [cell.textLabel setText:text];
-    [cell.detailTextLabel setText:value];
     
     return [cell autorelease];
 }
@@ -264,7 +302,6 @@ NSString *FormatUrl(NSString *ip, NSString *port) {
     _addressSection = NULL;
     
     [_server release];
-    [_ip release];
     
     [_tableView release];
     
