@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
-@property (retain, nonatomic) IBOutlet UISwitch *onOffSwitch;
-@property (retain, nonatomic) IBOutlet UILabel *addressLabel;
-- (IBAction)onOffValueChanged:(id)sender;
+@interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
+@property (retain, nonatomic) IBOutlet UITableView *tableView;
 @end
