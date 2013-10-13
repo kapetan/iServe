@@ -1,8 +1,8 @@
 (function() {
 	var HTTP_STATUS_CODES = {
-		'forbidden': 403,
-		'notFound': 404,
-		'internalServerError': 500
+		403: 'forbidden',
+		404: 'notFound',
+		500: 'internalServerError'
 	};
 
 	var errors = function(err, options) {
@@ -17,10 +17,10 @@
 	};
 
 	errors.notFound = function(err) {
-
+		errors.all(err);
 	};
 	errors.forbidden = function(err) {
-
+		errors.all(err);
 	};
 	errors.all = function(err) {
 		var view = new app.views.ErrorView({ error: err });
