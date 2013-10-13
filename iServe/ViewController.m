@@ -189,18 +189,13 @@ NSString *FormatUrl(NSString *ip, NSString *port) {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId];
     UITextField *field = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, TextFieldSize.width, TextFieldSize.height)];
     
-    field.tag = TextFieldTag;
     field.delegate = self;
-    
-    CGRect container = cell.contentView.frame;
-    
     field.textAlignment = NSTextAlignmentRight;
-    field.center = CGPointMake(container.size.width - (field.frame.size.width / 2) - MarginRight, container.size.height / 2);
     
     [field setText:defaultText];
     
+    cell.accessoryView = field;
     [cell.textLabel setText:text];
-    [cell.contentView addSubview:field];
     
     return [cell autorelease];
 }
@@ -230,7 +225,7 @@ NSString *FormatUrl(NSString *ip, NSString *port) {
         UITableViewCell *cell = [_tableView cellForRowAtIndexPath:
                                  [NSIndexPath indexPathForRow:0 inSection:_optionsSection->index]];
         
-        UITextField *field = (UITextField*) [cell.contentView viewWithTag:TextFieldTag];
+        UITextField *field = (UITextField*) cell.accessoryView;
         
         switch (indexPath.row) {
             case 0:
