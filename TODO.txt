@@ -1,6 +1,6 @@
 TODO
 
-- Create iOS UI
+DONE - Create iOS UI
 
 DONE - Add helpers methods to views
 DONE - Add navigation to files show (previous, next and file x of y)
