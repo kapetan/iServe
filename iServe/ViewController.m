@@ -14,6 +14,8 @@
 
 #import "ISServer.h"
 
+#define I18N(key) NSLocalizedString(key, nil)
+
 const NSInteger ServerPort = 8080;
 
 const NSInteger NumberOfSections = 2;
@@ -93,15 +95,15 @@ NSString *FormatUrl(NSString *ip, NSString *port) {
     
     _optionsSection->index = 0;
     _optionsSection->rows = 2;
-    _optionsSection->header = @"Server";
+    _optionsSection->header = I18N(@"OPTIONS_SECTION_HEADER");
     _optionsSection->footer = nil;
     
     _addressSection = malloc(sizeof(TableSection));
     
     _addressSection->index = 1;
     _addressSection->rows = 1;
-    _addressSection->header = @"Browser URL";
-    _addressSection->footer = @"After starting the server, type in the URL in any browser connected to the same network";
+    _addressSection->header = I18N(@"ADDRESS_SECTION_HEADER");
+    _addressSection->footer = I18N(@"ADDRESS_SECTION_FOOTER");
     
     _tableSections[_optionsSection->index] = _optionsSection;
     _tableSections[_addressSection->index] = _addressSection;
@@ -125,6 +127,20 @@ NSString *FormatUrl(NSString *ip, NSString *port) {
     UITableViewCell *cell = [_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:_addressSection->index]];
     
     if(on) {
+        ALAuthorizationStatus auth = [ALAssetsLibrary authorizationStatus];
+        
+        if(auth == ALAuthorizationStatusDenied || auth == ALAuthorizationStatusRestricted) {
+            UIAlertView *alert = [[UIAlertView alloc]
+                                  initWithTitle:I18N(@"PHOTOS_ACCESS_TITLE")
+                                  message:I18N(@"PHOTOS_ACCESS_MESSAGE")
+                                  delegate:nil
+                                  cancelButtonTitle:I18N(@"PHOTOS_ACCESS_CANCEL_BUTTON")
+                                  otherButtonTitles:nil, nil];
+            
+            [alert show];
+            [alert release];
+        }
+        
         _server = [[ISServer alloc] init];
         [_server listenOnPort:_port];
         
@@ -135,7 +151,7 @@ NSString *FormatUrl(NSString *ip, NSString *port) {
         
         _server = nil;
         
-        [cell.textLabel setText:@"Not started"];
+        [cell.textLabel setText:I18N(@"ADDRESS_SECTION_SERVER_NOT_STARTED")];
     }
 }
 
@@ -198,21 +214,23 @@ NSString *FormatUrl(NSString *ip, NSString *port) {
                 UITextField *field = (UITextField*) cell.accessoryView;
                 
                 [field setText:[NSString stringWithFormat:@"%ld", (long)_port]];
-                [cell.textLabel setText:@"Port"];
+                field.enabled = ![self isServerOn];
+                
+                [cell.textLabel setText:I18N(@"OPTIONS_SECTION_SERVER_PORT")];
                 
                 break;
             case 1:
                 cell = [self reuseCellWithId:@"CellDefault" orCreateUsingSelector:@selector(createCellDefaultWithId:)];
                 
-                [cell.textLabel setText:@"Server"];
-                [cell.detailTextLabel setText:[self isServerOn] ? @"On" : @"Off"];
+                [cell.textLabel setText:I18N(@"OPTIONS_SECTION_SERVER_STATE")];
+                [cell.detailTextLabel setText:[self isServerOn] ? I18N(@"SHARED_ON") : I18N(@"SHARED_OFF")];
                 
                 break;
         }
     } else if(indexPath.section == _addressSection->index) {
         cell = [self reuseCellWithId:@"CellLabel" orCreateUsingSelector:@selector(createCellLabelWithId:)];
         
-        NSString *text = [self isServerOn] ? [self getAddress] : @"Not started";
+        NSString *text = [self isServerOn] ? [self getAddress] : I18N(@"ADDRESS_SECTION_SERVER_NOT_STARTED");
         
         [cell.textLabel setText:text];
     }
@@ -273,14 +291,14 @@ NSString *FormatUrl(NSString *ip, NSString *port) {
                 [field resignFirstResponder];
                 
                 cell = [_tableView cellForRowAtIndexPath:indexPath];
-                BOOL on = ![[cell.detailTextLabel.text lowercaseString] isEqualToString:@"on"];
+                BOOL on = ![self isServerOn]; //![[cell.detailTextLabel.text lowercaseString] isEqualToString:@"on"];
                 
                 if(on) {
                     field.enabled = NO;
-                    [cell.detailTextLabel setText:@"On"];
+                    [cell.detailTextLabel setText:I18N(@"SHARED_ON")];
                 } else {
                     field.enabled = YES;
-                    [cell.detailTextLabel setText:@"Off"];
+                    [cell.detailTextLabel setText:I18N(@"SHARED_OFF")];
                 }
                 
                 [self onOffValueChanged:on];

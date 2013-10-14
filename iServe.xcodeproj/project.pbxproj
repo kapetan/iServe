@@ -36,6 +36,8 @@
 		C567C35417FF558300BFAF6A /* NSDictionary+ISCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = C567C35317FF558300BFAF6A /* NSDictionary+ISCollection.m */; };
 		C567C35A1800623100BFAF6A /* ISImage.m in Sources */ = {isa = PBXBuildFile; fileRef = C567C3591800623100BFAF6A /* ISImage.m */; };
 		C567C35C1800B39900BFAF6A /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = C567C35B1800B39900BFAF6A /* index.html */; };
+		C5788CDF180C7A1200EC39A3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C5788CD9180C7A1200EC39A3 /* InfoPlist.strings */; };
+		C5788CE0180C7A1200EC39A3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C5788CDB180C7A1200EC39A3 /* Localizable.strings */; };
 		C5E2C69D17F6236A0026FF35 /* ISServer.m in Sources */ = {isa = PBXBuildFile; fileRef = C5E2C69C17F6236A0026FF35 /* ISServer.m */; };
 		C5E2C6A017F866F70026FF35 /* ISAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = C5E2C69F17F866F70026FF35 /* ISAlbum.m */; };
 		C5E2C6A317F8671C0026FF35 /* ISFile.m in Sources */ = {isa = PBXBuildFile; fileRef = C5E2C6A217F8671C0026FF35 /* ISFile.m */; };
@@ -91,6 +93,8 @@
 		C567C3581800623100BFAF6A /* ISImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISImage.h; sourceTree = "<group>"; };
 		C567C3591800623100BFAF6A /* ISImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISImage.m; sourceTree = "<group>"; };
 		C567C35B1800B39900BFAF6A /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = index.html; path = iServe/assets/public/index.html; sourceTree = "<group>"; };
+		C5788CDA180C7A1200EC39A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
+		C5788CDC180C7A1200EC39A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Localizable.strings; sourceTree = "<group>"; };
 		C5E2C69B17F6236A0026FF35 /* ISServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISServer.h; sourceTree = "<group>"; };
 		C5E2C69C17F6236A0026FF35 /* ISServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISServer.m; sourceTree = "<group>"; };
 		C5E2C69E17F866F70026FF35 /* ISAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISAlbum.h; sourceTree = "<group>"; };
@@ -171,6 +175,7 @@
 		C53BB2861795F6F7003F985B /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C5788CD8180C7A1200EC39A3 /* en.lproj */,
 				C53BB2871795F6F7003F985B /* iServe-Info.plist */,
 				C53BB2881795F6F7003F985B /* InfoPlist.strings */,
 				C53BB28B1795F6F7003F985B /* main.m */,
@@ -232,6 +237,15 @@
 			name = lib;
 			sourceTree = "<group>";
 		};
+		C5788CD8180C7A1200EC39A3 /* en.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				C5788CD9180C7A1200EC39A3 /* InfoPlist.strings */,
+				C5788CDB180C7A1200EC39A3 /* Localizable.strings */,
+			);
+			path = en.lproj;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -288,8 +302,10 @@
 				C53BB2941795F6F7003F985B /* Default@2x.png in Resources */,
 				C53BB2961795F6F7003F985B /* Default-568h@2x.png in Resources */,
 				C53BB29C1795F6F7003F985B /* ViewController_iPhone.xib in Resources */,
+				C5788CE0180C7A1200EC39A3 /* Localizable.strings in Resources */,
 				C567C34A17FCAC0E00BFAF6A /* mimetypes.json in Resources */,
 				C567C34B17FCAC0E00BFAF6A /* public in Resources */,
+				C5788CDF180C7A1200EC39A3 /* InfoPlist.strings in Resources */,
 				C567C35C1800B39900BFAF6A /* index.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -341,6 +357,22 @@
 				C53BB29B1795F6F7003F985B /* en */,
 			);
 			name = ViewController_iPhone.xib;
+			sourceTree = "<group>";
+		};
+		C5788CD9180C7A1200EC39A3 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C5788CDA180C7A1200EC39A3 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		C5788CDB180C7A1200EC39A3 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C5788CDC180C7A1200EC39A3 /* en */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
