@@ -3,6 +3,7 @@
 		var albums = new app.models.AlbumCollection();
 		var onalbum = function(album) {
 			album.getFiles({
+				error: app.controllers.errors.resource,
 				success: function(files) {
 					callback(album, files);
 				}

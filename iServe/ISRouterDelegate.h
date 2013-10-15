@@ -10,10 +10,10 @@
 
 #import "HttpServer.h"
 
-typedef void (^HttpServerResolveBlock)(HttpServerRequest *, HttpServerResponse *);
+typedef void (^ISResolveBlock)(HttpServerRequest *, HttpServerResponse *);
 
-@interface HttpServerRouterDelegate : NSObject <HttpServerDelegate>
--(void) matchMethod:(id)method path:(id)path request:(HttpServerResolveBlock)request;
+@interface ISRouterDelegate : NSObject <HttpServerDelegate>
+-(void) matchMethod:(id)method path:(id)path request:(ISResolveBlock)request;
 
 -(void) routeRequest:(HttpServerRequest*)request response:(HttpServerResponse*)response;
 -(void) routeRequest:(HttpServerRequest*)request response:(HttpServerResponse*)response

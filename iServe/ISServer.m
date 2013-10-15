@@ -10,7 +10,7 @@
 
 #import "ISServer.h"
 
-#import "HttpServerRouterDelegate.h"
+#import "ISRouterDelegate.h"
 #import "HttpServer.h"
 
 #import "ISAlbum.h"
@@ -187,7 +187,7 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
 }
 
 @implementation ISServer {
-    HttpServerRouterDelegate *_router;
+    ISRouterDelegate *_router;
     HttpServer *_server;
     
     ISMimeTypes *_mimeTypes;
@@ -198,7 +198,7 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
 
 -(id) init {
     if(self = [super init]) {
-        _router = [[HttpServerRouterDelegate alloc] init];
+        _router = [[ISRouterDelegate alloc] init];
         _server = [[HttpServer alloc] init];
         
         _mimeTypes = [[ISMimeTypes alloc] initWithJsonFile:AssetsPath(@"mimetypes.json")];

@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Mirza Kapetanovic. All rights reserved.
 //
 
-#import "HttpServerRouterDelegate.h"
+#import "ISRouterDelegate.h"
 
 @interface Route : NSObject
 @end
@@ -14,7 +14,7 @@
 @implementation Route {
     NSString *_method;
     NSPredicate *_path;
-    HttpServerResolveBlock _block;
+    ISResolveBlock _block;
 }
 
 -(id) init {
@@ -30,7 +30,7 @@
     return self;
 }
 
--(id) initWithMethod:(NSString*)method path:(NSString*)path block:(HttpServerResolveBlock)block {
+-(id) initWithMethod:(NSString*)method path:(NSString*)path block:(ISResolveBlock)block {
     if(self = [super init]) {
         self->_method = [method retain];
         self->_path = [[NSPredicate predicateWithFormat:@"(SELF LIKE[c] %@) OR (SELF LIKE[c] %@)",
@@ -45,7 +45,7 @@
     return [_method isEqualToString:method] && [_path evaluateWithObject:path];
 }
 
--(HttpServerResolveBlock) getBlock {
+-(ISResolveBlock) getBlock {
     return _block;
 }
 
@@ -58,7 +58,7 @@
 }
 @end
 
-@implementation HttpServerRouterDelegate {
+@implementation ISRouterDelegate {
     NSMutableDictionary *_routes;
     Route *_notFound;
 }
@@ -72,7 +72,7 @@
     return self;
 }
 
--(void) matchMethod:(id)method path:(id)path request:(HttpServerResolveBlock)request {
+-(void) matchMethod:(id)method path:(id)path request:(ISResolveBlock)request {
     if(![method isKindOfClass:[NSArray class]]) {
         method = [NSArray arrayWithObject:method];
     }
@@ -92,7 +92,7 @@
     
     for (Route *route in paths) {
         if([route doesMatchMethod:request.header.method andPath:request.header.url.pathname]) {
-            HttpServerResolveBlock block = [route getBlock];
+            ISResolveBlock block = [route getBlock];
             block(request, response);
             
             return;
@@ -124,7 +124,7 @@
 
 -(void) serverDidClose:(HttpServer *)server {}
 
--(void) matchSingleMethod:(NSString *)method path:(NSString *)path request:(HttpServerResolveBlock)request {
+-(void) matchSingleMethod:(NSString *)method path:(NSString *)path request:(ISResolveBlock)request {
     NSMutableArray *paths = [_routes objectForKey:method];
     
     if(!paths) {

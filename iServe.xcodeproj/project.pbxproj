@@ -27,7 +27,7 @@
 		C55B76CF179754FC0001ADE9 /* HttpUrl.m in Sources */ = {isa = PBXBuildFile; fileRef = C55B76C2179754FC0001ADE9 /* HttpUrl.m */; };
 		C55B76D1179754FC0001ADE9 /* TcpConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = C55B76C5179754FC0001ADE9 /* TcpConnection.m */; };
 		C55B76D2179754FC0001ADE9 /* TcpServer.m in Sources */ = {isa = PBXBuildFile; fileRef = C55B76C7179754FC0001ADE9 /* TcpServer.m */; };
-		C55B76D61797567F0001ADE9 /* HttpServerRouterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C55B76D51797567F0001ADE9 /* HttpServerRouterDelegate.m */; };
+		C55B76D61797567F0001ADE9 /* ISRouterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C55B76D51797567F0001ADE9 /* ISRouterDelegate.m */; };
 		C55B76D81797EE2B0001ADE9 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C55B76D71797EE2B0001ADE9 /* AssetsLibrary.framework */; };
 		C567C34A17FCAC0E00BFAF6A /* mimetypes.json in Resources */ = {isa = PBXBuildFile; fileRef = C567C34817FCAC0E00BFAF6A /* mimetypes.json */; };
 		C567C34B17FCAC0E00BFAF6A /* public in Resources */ = {isa = PBXBuildFile; fileRef = C567C34917FCAC0E00BFAF6A /* public */; };
@@ -81,8 +81,8 @@
 		C55B76C5179754FC0001ADE9 /* TcpConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TcpConnection.m; sourceTree = "<group>"; };
 		C55B76C6179754FC0001ADE9 /* TcpServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TcpServer.h; sourceTree = "<group>"; };
 		C55B76C7179754FC0001ADE9 /* TcpServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TcpServer.m; sourceTree = "<group>"; };
-		C55B76D41797567F0001ADE9 /* HttpServerRouterDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpServerRouterDelegate.h; sourceTree = "<group>"; };
-		C55B76D51797567F0001ADE9 /* HttpServerRouterDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HttpServerRouterDelegate.m; sourceTree = "<group>"; };
+		C55B76D41797567F0001ADE9 /* ISRouterDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISRouterDelegate.h; sourceTree = "<group>"; };
+		C55B76D51797567F0001ADE9 /* ISRouterDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISRouterDelegate.m; sourceTree = "<group>"; };
 		C55B76D71797EE2B0001ADE9 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		C567C34817FCAC0E00BFAF6A /* mimetypes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = mimetypes.json; path = assets/mimetypes.json; sourceTree = "<group>"; };
 		C567C34917FCAC0E00BFAF6A /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; name = public; path = assets/public; sourceTree = "<group>"; };
@@ -180,7 +180,6 @@
 		C53BB2861795F6F7003F985B /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				C5788CE4180CA13400EC39A3 /* icon.png */,
 				C5788CD8180C7A1200EC39A3 /* en.lproj */,
 				C53BB2871795F6F7003F985B /* iServe-Info.plist */,
 				C53BB2881795F6F7003F985B /* InfoPlist.strings */,
@@ -189,6 +188,7 @@
 				C53BB2911795F6F7003F985B /* Default.png */,
 				C53BB2931795F6F7003F985B /* Default@2x.png */,
 				C53BB2951795F6F7003F985B /* Default-568h@2x.png */,
+				C5788CE4180CA13400EC39A3 /* icon.png */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -223,8 +223,8 @@
 		C55B76D3179756590001ADE9 /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				C55B76D41797567F0001ADE9 /* HttpServerRouterDelegate.h */,
-				C55B76D51797567F0001ADE9 /* HttpServerRouterDelegate.m */,
+				C55B76D41797567F0001ADE9 /* ISRouterDelegate.h */,
+				C55B76D51797567F0001ADE9 /* ISRouterDelegate.m */,
 				C5E2C69B17F6236A0026FF35 /* ISServer.h */,
 				C5E2C69C17F6236A0026FF35 /* ISServer.m */,
 				C5E2C69E17F866F70026FF35 /* ISAlbum.h */,
@@ -337,7 +337,7 @@
 				C55B76CF179754FC0001ADE9 /* HttpUrl.m in Sources */,
 				C55B76D1179754FC0001ADE9 /* TcpConnection.m in Sources */,
 				C55B76D2179754FC0001ADE9 /* TcpServer.m in Sources */,
-				C55B76D61797567F0001ADE9 /* HttpServerRouterDelegate.m in Sources */,
+				C55B76D61797567F0001ADE9 /* ISRouterDelegate.m in Sources */,
 				C5E2C69D17F6236A0026FF35 /* ISServer.m in Sources */,
 				C5E2C6A017F866F70026FF35 /* ISAlbum.m in Sources */,
 				C5E2C6A317F8671C0026FF35 /* ISFile.m in Sources */,
