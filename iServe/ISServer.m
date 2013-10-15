@@ -231,7 +231,8 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
             [self getFileData:request response:response];
         }];
         
-        [_router matchMethod:@"GET" path:@"/public/templates" request:^(HttpServerRequest *request, HttpServerResponse *response) {
+        [_router matchMethod:@"GET" path:@"/public/templates"
+                     request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getTemplates:request response:response];
         }];
         
@@ -243,6 +244,11 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
             [response writeHeaderStatus:HttpStatusCodeFound
                                 headers:@{ @"Location": AbsoluteUrl(request, @"/app", nil) }];
             [response end];
+        }];
+        
+        [_router matchMethod:@"GET" path:@"/favicon.ico"
+                     request:^(HttpServerRequest *request, HttpServerResponse *response) {
+            [_router routeRequest:request response:response toMethod:@"GET" path:@"/public/favicon.ico"];
         }];
         
         [_router matchMethod:@"GET" path:@"/*" request:^(HttpServerRequest *request, HttpServerResponse *response) {
