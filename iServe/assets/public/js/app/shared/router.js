@@ -4,7 +4,8 @@
 			'app(/)': 'root',
 			'app/albums(/)': 'albums',
 			'app/files/:album(/)': 'files',
-			'app/files/:album/:file(/)': 'file'
+			'app/files/:album/:file(/)': 'file',
+			'*path': 'notFound'
 		},
 		root: function() {
 			window.location.href = '/app/albums';
@@ -17,6 +18,10 @@
 		},
 		file: function(album, file) {
 			app.controllers.files.show(album, file);
+		},
+		notFound: function(path) {
+			var err = new Error('Requested path ' + path + ' not found');
+			app.controllers.errors.notFound(err);
 		}
 	});
 

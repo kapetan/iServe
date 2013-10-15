@@ -25,8 +25,8 @@
 	errors.all = function(err) {
 		var view = new app.views.ErrorView({ error: err });
 		
-		app.content.render(view.render());
 		app.header.clear();
+		app.content.render(view.render());
 	};
 
 	errors.resource = function(model, response) {
