@@ -2,6 +2,13 @@
 	var fetchAlbum = function(id, callback) {
 		var albums = new app.models.AlbumCollection();
 		var onalbum = function(album) {
+			if(!album) {
+				var err = new Error('Album not found');
+				app.controllers.errors.notFound(err);
+
+				return;
+			}
+
 			album.getFiles({
 				error: app.controllers.errors.resource,
 				success: function(files) {

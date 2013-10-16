@@ -23,8 +23,8 @@ void RenderJson(HttpServerResponse *response, HttpStatusCode status, id body);
 void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offset);
 
 BOOL ServerError(HttpServerResponse *response, NSError *error);
-BOOL EmptyParameter(HttpServerResponse *response, NSError *error);
-BOOL ResourceNotFound(HttpServerResponse *response, NSError *error);
+BOOL EmptyParameter(HttpServerResponse *response, id parameter);
+BOOL ResourceNotFound(HttpServerResponse *response, id resource);
 
 @interface ISServer : NSObject
 -(void) getPublicFiles:(HttpServerRequest*)request response:(HttpServerResponse*)response;
