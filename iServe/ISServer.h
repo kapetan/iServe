@@ -14,17 +14,9 @@
 NSString *AssetsPath(NSString *path);
 NSString *AbsoluteUrl(HttpServerRequest *request, NSString *path, NSDictionary *query);
 
-NSDictionary *SerializeDirecotry(NSString *path, BOOL hidden, NSError **error);
-
-void RenderData(HttpServerResponse *response, HttpStatusCode status, NSData *body);
-void RenderString(HttpServerResponse *response, HttpStatusCode status, NSString *body);
-void RenderJson(HttpServerResponse *response, HttpStatusCode status, id body);
+NSDictionary *SerializeDirectory(NSString *path, BOOL hidden, NSError **error);
 
 void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offset);
-
-BOOL ServerError(HttpServerResponse *response, NSError *error);
-BOOL EmptyParameter(HttpServerResponse *response, id parameter);
-BOOL ResourceNotFound(HttpServerResponse *response, id resource);
 
 @interface ISServer : NSObject
 -(void) getPublicFiles:(HttpServerRequest*)request response:(HttpServerResponse*)response;

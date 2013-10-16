@@ -18,6 +18,7 @@
 		C53BB2961795F6F7003F985B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C53BB2951795F6F7003F985B /* Default-568h@2x.png */; };
 		C53BB2991795F6F7003F985B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C53BB2981795F6F7003F985B /* ViewController.m */; };
 		C53BB29C1795F6F7003F985B /* ViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = C53BB29A1795F6F7003F985B /* ViewController_iPhone.xib */; };
+		C54789B0180F24BB0019A592 /* HttpServerResponse+ISResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C54789AF180F24BB0019A592 /* HttpServerResponse+ISResponse.m */; };
 		C55B76C8179754FC0001ADE9 /* HttpError.m in Sources */ = {isa = PBXBuildFile; fileRef = C55B76B4179754FC0001ADE9 /* HttpError.m */; };
 		C55B76C9179754FC0001ADE9 /* HttpHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = C55B76B6179754FC0001ADE9 /* HttpHeader.m */; };
 		C55B76CB179754FC0001ADE9 /* HttpServer.m in Sources */ = {isa = PBXBuildFile; fileRef = C55B76BA179754FC0001ADE9 /* HttpServer.m */; };
@@ -62,6 +63,8 @@
 		C53BB2971795F6F7003F985B /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		C53BB2981795F6F7003F985B /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		C53BB29B1795F6F7003F985B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController_iPhone.xib; sourceTree = "<group>"; };
+		C54789AE180F24BB0019A592 /* HttpServerResponse+ISResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "HttpServerResponse+ISResponse.h"; sourceTree = "<group>"; };
+		C54789AF180F24BB0019A592 /* HttpServerResponse+ISResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "HttpServerResponse+ISResponse.m"; sourceTree = "<group>"; };
 		C55B76B2179754FC0001ADE9 /* http-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "http-Prefix.pch"; sourceTree = "<group>"; };
 		C55B76B3179754FC0001ADE9 /* HttpError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpError.h; sourceTree = "<group>"; };
 		C55B76B4179754FC0001ADE9 /* HttpError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HttpError.m; sourceTree = "<group>"; };
@@ -239,6 +242,8 @@
 				C567C35317FF558300BFAF6A /* NSDictionary+ISCollection.m */,
 				C567C3581800623100BFAF6A /* ISImage.h */,
 				C567C3591800623100BFAF6A /* ISImage.m */,
+				C54789AE180F24BB0019A592 /* HttpServerResponse+ISResponse.h */,
+				C54789AF180F24BB0019A592 /* HttpServerResponse+ISResponse.m */,
 			);
 			name = lib;
 			sourceTree = "<group>";
@@ -331,6 +336,7 @@
 				C55B76C8179754FC0001ADE9 /* HttpError.m in Sources */,
 				C55B76C9179754FC0001ADE9 /* HttpHeader.m in Sources */,
 				C55B76CB179754FC0001ADE9 /* HttpServer.m in Sources */,
+				C54789B0180F24BB0019A592 /* HttpServerResponse+ISResponse.m in Sources */,
 				C55B76CC179754FC0001ADE9 /* HttpServerRequest.m in Sources */,
 				C55B76CD179754FC0001ADE9 /* HttpServerResponse.m in Sources */,
 				C55B76CE179754FC0001ADE9 /* HttpStatusCodes.m in Sources */,

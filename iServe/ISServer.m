@@ -18,12 +18,26 @@
 
 #import "NSDictionary+ISCollection.h"
 #import "NSArray+ISCollection.h"
+#import "HttpServerResponse+ISResponse.h"
+
 #import "ISMimeTypes.h"
 
-#define HTTP_ERROR(resource) \
-    if(PermissionError(response, error) || ServerError(response, error) || ResourceNotFound(response, resource)) return;
+#define HTTP_ERROR(response, error, resource) \
+    if(error) { [response sendError:error]; return; } \
+    if(!resource) { [response sendNotFound:@"Resource not found"]; return; } \
 
 const NSUInteger DATA_BUFFER_LENGTH = 1024 * 1024;
+
+BOOL IsNullOrEmpty(id obj) {
+    if(!obj || obj == [NSNull null]) {
+        return YES;
+    }
+    if([obj isKindOfClass:[NSString class]]) {
+        return [obj isEqualToString:@""];
+    }
+    
+    return NO;
+}
 
 NSString *AssetsPath(NSString *path) {
     NSString *assetsPath = [[NSBundle mainBundle] resourcePath];
@@ -87,36 +101,6 @@ NSDictionary *SerializeDirectory(NSString *path, BOOL hidden, NSError **error) {
     return directory;
 }
 
-void RenderData(HttpServerResponse *response, HttpStatusCode status, NSData *body) {
-    NSString *length = [NSString stringWithFormat:@"%lu", (unsigned long)[body length]];
-    
-    [response writeHeaderStatus:status headers:@{ @"Content-Length": length }];
-    [response write:body];
-    [response end];
-}
-
-void RenderString(HttpServerResponse *response, HttpStatusCode status, NSString *body) {
-    NSData *data = [body dataUsingEncoding:NSUTF8StringEncoding];
-    
-    if(![response.header fieldValue:@"Content-Type"]) {
-        [response.header setValue:@"text/plain; charset=utf-8" forField:@"Content-Type"];
-    }
-    
-    RenderData(response, status, data);
-}
-
-void RenderJson(HttpServerResponse *response, HttpStatusCode status, id body) {
-    NSError *error = nil;
-    NSData *json = [NSJSONSerialization dataWithJSONObject:body options:0 error:&error];
-    
-    if(ServerError(response, error)) {
-        return;
-    }
-
-    [response.header setValue:@"application/json" forField:@"Content-Type"];
-    RenderData(response, status, json);
-}
-
 void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offset) {
     NSUInteger length = [file getDataLength];
     BOOL flushed = NO;
@@ -144,46 +128,6 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
         delegate.drain = nil;
         [response end];
     }
-}
-
-BOOL PermissionError(HttpServerResponse *response, NSError *error) {
-    if(error && [[error domain] isEqualToString:ALAssetsLibraryErrorDomain]) {
-        NSInteger code = [error code];
-        
-        if(code == ALAssetsLibraryAccessGloballyDeniedError || code == ALAssetsLibraryAccessUserDeniedError) {
-            RenderJson(response, HttpStatusCodeForbidden, @{ @"message": [error localizedDescription] });
-            return YES;
-        }
-    }
-    
-    return NO;
-}
-
-BOOL ServerError(HttpServerResponse *response, NSError *error) {
-    if(error) {
-        RenderString(response, HttpStatusCodeInternalServerError, [error localizedDescription]);
-        return YES;
-    }
-    
-    return NO;
-}
-
-BOOL EmptyParameter(HttpServerResponse *response, id parameter) {
-    if(!parameter || parameter == [NSNull null]) {
-        RenderJson(response, HttpStatusCodeBadRequest, @{ @"message": @"Required parameter missing" });
-        return YES;
-    }
-    
-    return NO;
-}
-
-BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
-    if(!resource) {
-        RenderJson(response, HttpStatusCodeNotFound, @{ @"message": @"Resource not found" });
-        return YES;
-    }
-    
-    return NO;
 }
 
 @implementation ISServer {
@@ -227,7 +171,8 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
                      request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getFileImage:request response:response];
         }];
-        [_router matchMethod:@"GET" path:@"/api/files/data" request:^(HttpServerRequest *request, HttpServerResponse *response) {
+        [_router matchMethod:@"GET" path:@"/api/files/data"
+                     request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getFileData:request response:response];
         }];
         
@@ -264,7 +209,7 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
     NSData *file = [NSData dataWithContentsOfFile:AssetsPath(path)];
     
     if(!file) {
-        RenderString(response, HttpStatusCodeNotFound, [NSString stringWithFormat:@"%@ not found", path]);
+        [response sendString:[NSString stringWithFormat:@"%@ not found", path] statusCode:HttpStatusCodeNotFound];
         return;
     }
     
@@ -275,21 +220,22 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
     }
     
     [response.header setValue:mimeType forField:@"Content-Type"];
-    
-    RenderData(response, HttpStatusCodeOk, file);
+    [response sendData:file];
 }
 
 -(void) getTemplates:(HttpServerRequest *)request response:(HttpServerResponse *)response {
     NSError *error = nil;
     NSDictionary *directory = SerializeDirectory(AssetsPath(@"/public/templates"), NO, &error);
     
-    if(ServerError(response, error)) {
+    if(error) {
+        [response sendError:error];
         return;
     }
     
     NSData *json = [NSJSONSerialization dataWithJSONObject:directory options:0 error:&error];
     
-    if(ServerError(response, error)) {
+    if(error) {
+        [response sendError:error];
         return;
     }
     
@@ -297,14 +243,14 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
     [body appendData:json];
     
     [response.header setValue:@"application/javascript" forField:@"Content-Type"];
-    RenderData(response, HttpStatusCodeOk, body);
+    [response sendData:body];
     
     [body release];
 }
 
 -(void) getAlbums:(HttpServerRequest*)request response:(HttpServerResponse*)response {
     [ISAlbum getAllUsingAssetsLibrary:_assetsLibrary block:^(NSArray *albums, NSError *error) {
-        HTTP_ERROR(albums);
+        HTTP_ERROR(response, error, albums);
         
         albums = [albums mapObjectsUsingBlock:^(ISAlbum *album, NSUInteger i) {
             NSDictionary *query = @{ @"album": album.url };
@@ -315,19 +261,20 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
             }];
         }];
         
-        RenderJson(response, HttpStatusCodeOk, albums);
+        [response sendJson:albums];
     }];
 }
 
 -(void) getFiles:(HttpServerRequest*)request response:(HttpServerResponse*)response {
     NSString *albumUrl = [request.header.url.query objectForKey:@"album"];
     
-    if(EmptyParameter(response, albumUrl)) {
+    if(IsNullOrEmpty(albumUrl)) {
+        [response sendBadRequest:@"Invalid parameter"];
         return;
     }
     
     [ISFile getAllUsingAssetsLibrary:_assetsLibrary byAlbumUrl:albumUrl block:^(NSArray *files, NSError *error) {
-        HTTP_ERROR(files);
+        HTTP_ERROR(response, error, files);
      
         files = [files mapObjectsUsingBlock:^(ISFile *file, NSUInteger i) {
             NSDictionary *query = @{ @"file": file.url };
@@ -341,32 +288,33 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
             }];
         }];
      
-        RenderJson(response, HttpStatusCodeOk, files);
+        [response sendJson:files];
     }];
 }
 
 -(void) getAlbumThumbnail:(HttpServerRequest *)request response:(HttpServerResponse *)response {
     NSString *albumUrl = [request.header.url.query objectForKey:@"album"];
     
-    if(EmptyParameter(response, albumUrl)) {
+    if(IsNullOrEmpty(albumUrl)) {
+        [response sendBadRequest:@"Invalid parameter"];
         return;
     }
     
     [ISAlbum getUsingAssetsLibrary:_assetsLibrary byUrl:albumUrl block:^(ISAlbum *album, NSError *error) {
-        HTTP_ERROR(album);
+        HTTP_ERROR(response, error, album);
         
         NSInteger count = [album numberOfFiles];
         
         if(!count) {
-            RenderData(response, HttpStatusCodeOk, nil);
+            [response sendData:nil];
             return;
         }
         
         [album getFileByIndex:(count - 1) block:^(ISFile *file, NSError *error) {
-            HTTP_ERROR(file);
+            HTTP_ERROR(response, error, file);
             
             [response.header setValue:ISImageGetRepresentationMimeType(ISImageRepresentationPNG) forField:@"Content-Type"];
-            RenderData(response, HttpStatusCodeOk, [file getThumbnail:ISImageRepresentationPNG]);
+            [response sendData:[file getThumbnail:ISImageRepresentationPNG]];
         }];
     }];
 }
@@ -386,12 +334,13 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
 -(void) getFileData:(HttpServerRequest *)request response:(HttpServerResponse *)response {
     NSString *fileUrl = [request.header.url.query valueForKey:@"file"];
     
-    if(EmptyParameter(response, fileUrl)) {
+    if(IsNullOrEmpty(fileUrl)) {
+        [response sendBadRequest:@"Invalid parameter"];
         return;
     }
     
     [ISFile getUsingAssetsLibrary:_assetsLibrary byUrl:fileUrl block:^(ISFile *file, NSError *error) {
-        HTTP_ERROR(file);
+        HTTP_ERROR(response, error, file);
         
         if([request.header.url.query objectForKey:@"download"]) {
             [response.header setValue:[NSString stringWithFormat:@"attachment; filename=\"%@\"", file.name]
@@ -431,15 +380,16 @@ BOOL ResourceNotFound(HttpServerResponse *response, id resource) {
              block:(NSData* (^)(ISFile*, ISImageRepresentation))block {
     NSString *fileUrl = [request.header.url.query valueForKey:@"file"];
     
-    if(EmptyParameter(response, fileUrl)) {
+    if(IsNullOrEmpty(fileUrl)) {
+        [response sendBadRequest:@"Invalid parameter"];
         return;
     }
     
     [ISFile getUsingAssetsLibrary:_assetsLibrary byUrl:fileUrl block:^(ISFile *file, NSError *error) {
-        HTTP_ERROR(file);
+        HTTP_ERROR(response, error, file);
         
         [response.header setValue:ISImageGetRepresentationMimeType(ISImageRepresentationPNG) forField:@"Content-Type"];
-        RenderData(response, HttpStatusCodeOk, block(file, ISImageRepresentationPNG));
+        [response sendData:block(file, ISImageRepresentationPNG)];
     }];
 }
 @end
