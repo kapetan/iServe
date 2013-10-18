@@ -11,6 +11,9 @@
 #import "HttpServer.h"
 #import "ISFile.h"
 
+@class ISServer;
+@class ISServerDelegate;
+
 NSString *AssetsPath(NSString *path);
 NSString *AbsoluteUrl(HttpServerRequest *request, NSString *path, NSDictionary *query);
 
@@ -18,7 +21,14 @@ NSDictionary *SerializeDirectory(NSString *path, BOOL hidden, NSError **error);
 
 void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offset);
 
+@protocol ISServerDelegate <NSObject>
+-(void) server:(ISServer*)server errorOccurred:(NSError *)error;
+-(void) serverDidClose:(ISServer*)server;
+@end
+
 @interface ISServer : NSObject
+@property (nonatomic, assign) ISServerDelegate *delegate;
+
 -(void) getPublicFiles:(HttpServerRequest*)request response:(HttpServerResponse*)response;
 -(void) getTemplates:(HttpServerRequest*)request response:(HttpServerResponse*)response;
 

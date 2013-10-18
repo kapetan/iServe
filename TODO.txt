@@ -3,6 +3,13 @@ TODO
 DONE - Create iOS UI
 
 - Better error handling in app (on server disconnect, no permission)
+- Stress profile app
+- Do image scaling and heavy work in separate thread
+- Memory error on too many thumbs
+	* Image caching
+	* Lazy load images
+	* Smaller thumbs
+	* Handle fewer image requests at the time
 
 DONE - Add helpers methods to views
 DONE - Add navigation to files show (previous, next and file x of y)
@@ -17,7 +24,7 @@ DONE - Add gear dropdown to files (direct download and other actions)
 - Create error page for web page (no assets permission)
 - Add client-side caching of albums and files
 
-- Refactor response functions (e.g. RenderData) to categories extending HttpServerResponse
+DONE - Refactor response functions (e.g. RenderData) to categories extending HttpServerResponse
 - Update server routes to be more REST (similar to client routes)
 - Make albums and assets writable
 	* Create file in existing album and write data to it
@@ -28,3 +35,7 @@ DONE - Add gear dropdown to files (direct download and other actions)
 
 - Support other file types (videos, maybe audio)
 - Support for zipping whole albums
+
+HTTP
+
+- Set close flag in TcpConnection

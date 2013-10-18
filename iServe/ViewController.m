@@ -24,6 +24,12 @@ const NSInteger TextFieldMaxLength = 5;
 const CGSize TextFieldSize = { 70, 30 };
 
 typedef struct {
+    UITableViewCell *port;
+    UITableViewCell *onOff;
+    UITableViewCell *address;
+} TableRows;
+
+typedef struct {
     NSInteger index;
     NSInteger rows;
     NSString *header;
@@ -71,6 +77,18 @@ NSString *IpAddress() {
 
 NSString *FormatUrl(NSString *ip, NSString *port) {
     return [NSString stringWithFormat:@"http://%@:%@", ip, port];
+}
+
+void ShowAlert(NSString* title, NSString *message) {
+    UIAlertView *alert = [[UIAlertView alloc]
+                          initWithTitle:title
+                          message:message
+                          delegate:nil
+                          cancelButtonTitle:I18N(@"SHARED_CLOSE")
+                          otherButtonTitles:nil, nil];
+    
+    [alert show];
+    [alert release];
 }
 
 @interface ViewController ()
@@ -122,37 +140,56 @@ NSString *FormatUrl(NSString *ip, NSString *port) {
     return FormatUrl(ip, [NSString stringWithFormat:@"%ld", (long)_port]);
 }
 
+/* Server delegate */
+-(void) serverDidClose:(ISServer *)server {
+    _server.delegate = nil;
+    
+    [_server release];
+    _server = nil;
+    
+    [self serverOnClose];
+}
+
+-(void) server:(ISServer *)server errorOccurred:(NSError *)error {
+    ShowAlert(I18N(@"SERVER_ERROR_TITLE"), I18N(@"SERVER_ERROR_MESSAGE"));
+}
+
 /* Switch delegate */
 -(void) onOffValueChanged:(BOOL)on {
-    UITableViewCell *cell = [_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:_addressSection->index]];
-    
     if(on) {
         ALAuthorizationStatus auth = [ALAssetsLibrary authorizationStatus];
         
         if(auth == ALAuthorizationStatusDenied || auth == ALAuthorizationStatusRestricted) {
-            UIAlertView *alert = [[UIAlertView alloc]
-                                  initWithTitle:I18N(@"PHOTOS_ACCESS_TITLE")
-                                  message:I18N(@"PHOTOS_ACCESS_MESSAGE")
-                                  delegate:nil
-                                  cancelButtonTitle:I18N(@"PHOTOS_ACCESS_CANCEL_BUTTON")
-                                  otherButtonTitles:nil, nil];
-            
-            [alert show];
-            [alert release];
+            ShowAlert(I18N(@"PHOTO_ACCESS_MESSAGE"), I18N(@"PHOTO_ACCESS_MESSAGE"));
         }
         
-        _server = [[ISServer alloc] init];
-        [_server listenOnPort:_port];
+        [self serverOnStart];
         
-        [cell.textLabel setText:[self getAddress]];
+        _server = [[ISServer alloc] init];
+        _server.delegate = self;
+        
+        [_server listenOnPort:_port];
     } else {
         [_server close];
-        [_server release];
-        
-        _server = nil;
-        
-        [cell.textLabel setText:I18N(@"ADDRESS_SECTION_SERVER_NOT_STARTED")];
     }
+}
+
+-(void) serverOnClose {
+    TableRows rows = [self getTableRows];
+    UITextField *field = (UITextField*) rows.port.accessoryView;
+    
+    field.enabled = YES;
+    [rows.onOff.detailTextLabel setText:I18N(@"SHARED_OFF")];
+    [rows.address.textLabel setText:I18N(@"ADDRESS_SECTION_SERVER_NOT_STARTED")];
+}
+
+-(void) serverOnStart {
+    TableRows rows = [self getTableRows];
+    UITextField *field = (UITextField*) rows.port.accessoryView;
+    
+    field.enabled = NO;
+    [rows.onOff.detailTextLabel setText:I18N(@"SHARED_ON")];
+    [rows.address.textLabel setText:[self getAddress]];
 }
 
 -(BOOL) isServerOn {
@@ -289,25 +326,24 @@ NSString *FormatUrl(NSString *ip, NSString *port) {
                 break;
             case 1:
                 [field resignFirstResponder];
-                
-                cell = [_tableView cellForRowAtIndexPath:indexPath];
-                BOOL on = ![self isServerOn]; //![[cell.detailTextLabel.text lowercaseString] isEqualToString:@"on"];
-                
-                if(on) {
-                    field.enabled = NO;
-                    [cell.detailTextLabel setText:I18N(@"SHARED_ON")];
-                } else {
-                    field.enabled = YES;
-                    [cell.detailTextLabel setText:I18N(@"SHARED_OFF")];
-                }
-                
-                [self onOffValueChanged:on];
+                [self onOffValueChanged:![self isServerOn]];
                 
                 break;
         }
     }
     
     [_tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+-(TableRows) getTableRows {
+    TableRows rows = {
+        [_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:_optionsSection->index]],
+        [_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:_optionsSection->index]],
+        [_tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:_addressSection->index]]
+
+    };
+    
+    return rows;
 }
 
 - (void)dealloc {

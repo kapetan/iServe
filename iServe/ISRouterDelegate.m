@@ -63,6 +63,9 @@
     Route *_notFound;
 }
 
+@synthesize error = _error;
+@synthesize close = _close;
+
 -(id) init {
     if(self = [super init]) {
         self->_routes = [[NSMutableDictionary alloc] init];
@@ -120,9 +123,13 @@
 
 -(void) server:(HttpServer *)server client:(TcpConnection *)connection errorOccurred:(NSError *)error {}
 
--(void) server:(HttpServer *)server errorOccurred:(NSError *)error {}
+-(void) server:(HttpServer *)server errorOccurred:(NSError *)error {
+    if(self.error) self.error(self, error);
+}
 
--(void) serverDidClose:(HttpServer *)server {}
+-(void) serverDidClose:(HttpServer *)server {
+    if(self.close) self.close(self);
+}
 
 -(void) matchSingleMethod:(NSString *)method path:(NSString *)path request:(ISResolveBlock)request {
     NSMutableArray *paths = [_routes objectForKey:method];

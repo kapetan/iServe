@@ -140,6 +140,8 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
     ALAssetsLibrary *_assetsLibrary;
 }
 
+@synthesize delegate = _delegate;
+
 -(id) init {
     if(self = [super init]) {
         _router = [[ISRouterDelegate alloc] init];
@@ -151,6 +153,13 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
         _assetsLibrary = [[ALAssetsLibrary alloc] init];
         
         _server.delegate = _router;
+        
+        _router.error = ^(ISRouterDelegate *router, NSError *error) {
+            if(self.delegate) [self.delegate server:self errorOccurred:error];
+        };
+        _router.close = ^(ISRouterDelegate *router) {
+            if(self.delegate) [self.delegate serverDidClose:self];
+        };
         
         [_router matchMethod:@"GET" path:@"/api/albums" request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getAlbums:request response:response];

@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
+#import "ISServer.h"
+
+@interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, ISServerDelegate>
 @property (retain, nonatomic) IBOutlet UITableView *tableView;
 @end
