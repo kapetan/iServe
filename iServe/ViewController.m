@@ -12,8 +12,6 @@
 
 #import "ViewController.h"
 
-#import "ISServer.h"
-
 #define I18N(key) NSLocalizedString(key, nil)
 
 const NSInteger ServerPort = 8080;

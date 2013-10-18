@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-#import "ISServer.h"
+#import "lib/ISServer.h"
 
 @interface ViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, ISServerDelegate>
 @property (retain, nonatomic) IBOutlet UITableView *tableView;
