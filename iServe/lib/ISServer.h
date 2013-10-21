@@ -26,8 +26,14 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
 -(void) serverDidClose:(ISServer*)server;
 @end
 
+@interface ISThreadedServerDelegate : NSObject <ISServerDelegate>
+@property (assign, nonatomic) id delegate;
+
+-(id) initWithThread:(NSThread*)caller;
+@end
+
 @interface ISServer : NSObject
-@property (nonatomic, assign) ISServerDelegate *delegate;
+@property (nonatomic, assign) id delegate;
 
 -(void) getPublicFiles:(HttpServerRequest*)request response:(HttpServerResponse*)response;
 -(void) getTemplates:(HttpServerRequest*)request response:(HttpServerResponse*)response;
@@ -40,6 +46,13 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
 -(void) getFileThumbnail:(HttpServerRequest *)request response:(HttpServerResponse *)response;
 -(void) getFileImage:(HttpServerRequest*)request response:(HttpServerResponse*)response;
 -(void) getFileData:(HttpServerRequest*)request response:(HttpServerResponse*)response;
+
+-(void) close;
+-(void) listenOnPort:(NSInteger)port;
+@end
+
+@interface ISThreadedServer : NSThread
+@property (atomic, assign) id delegate;
 
 -(void) close;
 -(void) listenOnPort:(NSInteger)port;

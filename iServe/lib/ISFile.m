@@ -9,7 +9,17 @@
 #import "ISFile.h"
 #import "ISAlbum.h"
 
+#import "ISAction.h"
+
 #import "NSDictionary+ISCollection.h"
+
+#define DISPATCH_ON_CURRENT_THREAD(type, signature, block) \
+    NSThread *current = [NSThread currentThread]; \
+    type _block = ^signature { \
+        [ISAction executeBlockOnThread:current waitUntilDone:NO block:^{ \
+            block(result, error); \
+        }]; \
+    };
 
 ISImageSize DEFAULT_THUMBNAIL_SIZE = { 300, 200 };
 ISImageScaleMode DEFAULT_THUMBNAIL_MODE = ISImageScaleModeCover;
@@ -35,11 +45,13 @@ ISImageScaleMode DEFAULT_THUMBNAIL_MODE = ISImageScaleModeCover;
 }
 
 +(void) getAllByAssetsGroup:(ALAssetsGroup *)group block:(ISFileAllBlock)block {
+    DISPATCH_ON_CURRENT_THREAD(ISFileAllBlock, (NSArray *result, NSError *error), block);
+    
     NSMutableArray *files = [NSMutableArray array];
     
     ALAssetsGroupEnumerationResultsBlock resultBlock = ^(ALAsset *asset, NSUInteger index, BOOL *stop) {
         if(!asset) {
-            block(files, nil);
+            _block(files, nil);
             return;
         }
         
@@ -51,17 +63,19 @@ ISImageScaleMode DEFAULT_THUMBNAIL_MODE = ISImageScaleModeCover;
 }
 
 +(void) getUsingAssetsLibrary:(ALAssetsLibrary*)library byUrl:(NSString*)url block:(ISFileGetBlock)block {
+    DISPATCH_ON_CURRENT_THREAD(ISFileGetBlock, (ISFile *result, NSError *error), block);
+    
     ALAssetsLibraryAssetForURLResultBlock resultBlock = ^(ALAsset *asset) {
         if(!asset) {
-            block(nil, nil);
+            _block(nil, nil);
             return;
         }
         
         ISFile *file = [[ISFile alloc] initWithAsset:asset];
-        block([file autorelease], nil);
+        _block([file autorelease], nil);
     };
     ALAssetsLibraryAccessFailureBlock failureBlock = ^(NSError *error) {
-        block(nil, error);
+        _block(nil, error);
     };
     
     NSURL *assetUrl = [NSURL URLWithString:url];
@@ -70,10 +84,12 @@ ISImageScaleMode DEFAULT_THUMBNAIL_MODE = ISImageScaleModeCover;
 
 
 +(void) getUsingAssetsGroup:(ALAssetsGroup*)group byIndex:(NSUInteger)index block:(ISFileGetBlock)block {
+    DISPATCH_ON_CURRENT_THREAD(ISFileGetBlock, (ISFile *result, NSError *error), block);
+    
     NSInteger count = [group numberOfAssets];
     
     if(index >= count) {
-        block(nil, nil);
+        _block(nil, nil);
         return;
     }
     
@@ -85,9 +101,9 @@ ISImageScaleMode DEFAULT_THUMBNAIL_MODE = ISImageScaleModeCover;
                 ISFile *file = [[ISFile alloc] initWithAsset:result];
                 [result release];
                 
-                block([file autorelease], nil);
+                _block([file autorelease], nil);
             } else {
-                block(nil, nil);
+                _block(nil, nil);
             }
             
             return;

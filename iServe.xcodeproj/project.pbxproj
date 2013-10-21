@@ -40,6 +40,7 @@
 		C5685CA81811A5FF00457A2E /* ISServer.m in Sources */ = {isa = PBXBuildFile; fileRef = C5685C9D1811A5FF00457A2E /* ISServer.m */; };
 		C5685CA91811A5FF00457A2E /* NSArray+ISCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = C5685C9F1811A5FF00457A2E /* NSArray+ISCollection.m */; };
 		C5685CAA1811A5FF00457A2E /* NSDictionary+ISCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = C5685CA11811A5FF00457A2E /* NSDictionary+ISCollection.m */; };
+		C5685CAD1812F07500457A2E /* ISAction.m in Sources */ = {isa = PBXBuildFile; fileRef = C5685CAC1812F07500457A2E /* ISAction.m */; };
 		C5788CDF180C7A1200EC39A3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C5788CD9180C7A1200EC39A3 /* InfoPlist.strings */; };
 		C5788CE0180C7A1200EC39A3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C5788CDB180C7A1200EC39A3 /* Localizable.strings */; };
 		C5788CE3180C9C8F00EC39A3 /* icon.html in Resources */ = {isa = PBXBuildFile; fileRef = C5788CE2180C9C8F00EC39A3 /* icon.html */; };
@@ -104,6 +105,8 @@
 		C5685C9F1811A5FF00457A2E /* NSArray+ISCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+ISCollection.m"; sourceTree = "<group>"; };
 		C5685CA01811A5FF00457A2E /* NSDictionary+ISCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+ISCollection.h"; sourceTree = "<group>"; };
 		C5685CA11811A5FF00457A2E /* NSDictionary+ISCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+ISCollection.m"; sourceTree = "<group>"; };
+		C5685CAB1812F07500457A2E /* ISAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISAction.h; sourceTree = "<group>"; };
+		C5685CAC1812F07500457A2E /* ISAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISAction.m; sourceTree = "<group>"; };
 		C5788CDA180C7A1200EC39A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
 		C5788CDC180C7A1200EC39A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Localizable.strings; sourceTree = "<group>"; };
 		C5788CE2180C9C8F00EC39A3 /* icon.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = icon.html; path = assets/icon.html; sourceTree = "<group>"; };
@@ -244,6 +247,8 @@
 				C5685C9F1811A5FF00457A2E /* NSArray+ISCollection.m */,
 				C5685CA01811A5FF00457A2E /* NSDictionary+ISCollection.h */,
 				C5685CA11811A5FF00457A2E /* NSDictionary+ISCollection.m */,
+				C5685CAB1812F07500457A2E /* ISAction.h */,
+				C5685CAC1812F07500457A2E /* ISAction.m */,
 			);
 			path = lib;
 			sourceTree = "<group>";
@@ -337,6 +342,7 @@
 				C53BB2901795F6F7003F985B /* AppDelegate.m in Sources */,
 				C53BB2991795F6F7003F985B /* ViewController.m in Sources */,
 				C55B76C8179754FC0001ADE9 /* HttpError.m in Sources */,
+				C5685CAD1812F07500457A2E /* ISAction.m in Sources */,
 				C55B76C9179754FC0001ADE9 /* HttpHeader.m in Sources */,
 				C55B76CB179754FC0001ADE9 /* HttpServer.m in Sources */,
 				C5685CA71811A5FF00457A2E /* ISRouterDelegate.m in Sources */,

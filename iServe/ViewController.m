@@ -94,7 +94,7 @@ void ShowAlert(NSString* title, NSString *message) {
 @end
 
 @implementation ViewController {
-    ISServer *_server;
+    ISThreadedServer *_server;
     NSInteger _port;
     
     TableSection *_tableSections[NumberOfSections];
@@ -163,7 +163,7 @@ void ShowAlert(NSString* title, NSString *message) {
         
         [self serverOnStart];
         
-        _server = [[ISServer alloc] init];
+        _server = [[ISThreadedServer alloc] init];
         _server.delegate = self;
         
         [_server listenOnPort:_port];

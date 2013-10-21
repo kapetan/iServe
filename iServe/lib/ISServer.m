@@ -20,6 +20,7 @@
 #import "NSArray+ISCollection.h"
 #import "HttpServerResponse+ISResponse.h"
 
+#import "ISAction.h"
 #import "ISMimeTypes.h"
 
 #define HTTP_ERROR(response, error, resource) \
@@ -400,5 +401,110 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
         [response.header setValue:ISImageGetRepresentationMimeType(ISImageRepresentationPNG) forField:@"Content-Type"];
         [response sendData:block(file, ISImageRepresentationPNG)];
     }];
+}
+@end
+
+@implementation ISThreadedServerDelegate {
+    NSThread *_caller;
+}
+
+@synthesize delegate = _delegate;
+
+-(id) init {
+    return [self initWithThread:[NSThread currentThread]];
+}
+
+-(id) initWithThread:(NSThread *)caller {
+    if(self = [super init]) {
+        self->_caller = [caller retain];
+        self->_delegate = nil;
+    }
+    
+    return self;
+}
+
+-(void) serverDidClose:(ISServer *)server {
+    if(self.delegate) {
+        [ISAction executeBlockOnThread:_caller waitUntilDone:NO block:^{
+            [self.delegate serverDidClose:server];
+        }];
+    }
+}
+
+-(void) server:(ISServer *)server errorOccurred:(NSError *)error {
+    if(self.delegate) {
+        [ISAction executeBlockOnThread:_caller waitUntilDone:NO block:^{
+            [self.delegate server:server errorOccurred:error];
+        }];
+    }
+}
+
+-(void) dealloc {
+    _delegate = nil;
+    [_caller release];
+    
+    [super dealloc];
+}
+@end
+
+@implementation ISThreadedServer {
+    ISServer *_server;
+    ISThreadedServerDelegate *_delegate;
+    
+    volatile NSInteger _port;
+}
+
+-(id) init {
+    if(self = [super init]) {
+        self->_delegate = [[ISThreadedServerDelegate alloc] init];
+        
+        [self setName:@"ISThreadedServer"];
+    }
+    
+    return self;
+}
+
+-(id) delegate {
+    @synchronized(_delegate) {
+        return _delegate.delegate;
+    }
+}
+
+-(void) setDelegate:(id)delegate {
+    @synchronized(_delegate) {
+        _delegate.delegate = delegate;
+    }
+}
+
+-(void) main {
+    _server = [[ISServer alloc] init];
+    _server.delegate = _delegate;
+    
+    [_server listenOnPort:_port];
+    
+    CFRunLoopRun();
+}
+
+-(void) close {
+    [ISAction executeBlockOnThread:self waitUntilDone:YES block:^{
+        [_server close];
+        
+        CFRunLoopRef current = CFRunLoopGetCurrent();
+        CFRunLoopStop(current);
+    }];
+}
+
+-(void) listenOnPort:(NSInteger)port {
+    _port = port;
+    [self start];
+}
+
+-(void) dealloc {
+    _server.delegate = nil;
+    
+    [_server release];
+    [_delegate release];
+    
+    [super dealloc];
 }
 @end
