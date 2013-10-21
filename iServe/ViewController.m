@@ -158,7 +158,7 @@ void ShowAlert(NSString* title, NSString *message) {
         ALAuthorizationStatus auth = [ALAssetsLibrary authorizationStatus];
         
         if(auth == ALAuthorizationStatusDenied || auth == ALAuthorizationStatusRestricted) {
-            ShowAlert(I18N(@"PHOTO_ACCESS_MESSAGE"), I18N(@"PHOTO_ACCESS_MESSAGE"));
+            ShowAlert(I18N(@"PHOTOS_ACCESS_TITLE"), I18N(@"PHOTOS_ACCESS_MESSAGE"));
         }
         
         [self serverOnStart];

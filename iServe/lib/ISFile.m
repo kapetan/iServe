@@ -133,7 +133,7 @@ ISImageScaleMode DEFAULT_THUMBNAIL_MODE = ISImageScaleModeCover;
     
     if(self = [super init]) {
         self->_name = [[representation filename] retain];
-        self->_extension = [[self->_name pathExtension] lowercaseString];
+        self->_extension = [[[self->_name pathExtension] lowercaseString] retain];
         self->_url = [url retain];
         self->_created = [[asset valueForProperty:ALAssetPropertyDate] retain];
         self->_type = [[[asset valueForProperty:ALAssetPropertyType] substringFromIndex:[@"ALAssetType" length]] retain];
@@ -200,6 +200,7 @@ ISImageScaleMode DEFAULT_THUMBNAIL_MODE = ISImageScaleModeCover;
 
 -(void) dealloc {
     [self->_name release];
+    [self->_extension release];
     [self->_url release];
     [self->_created release];
     [self->_type release];
