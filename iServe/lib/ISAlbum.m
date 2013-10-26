@@ -15,23 +15,13 @@
 
 const ALAssetsGroupType GROUP_TYPES = ALAssetsGroupAlbum | ALAssetsGroupSavedPhotos;
 
-#define DISPATCH_ON_CURRENT_THREAD(type, signature, block) \
-    NSThread *current = [NSThread currentThread]; \
-    type _block = ^signature { \
-        [ISAction executeBlockOnThread:current waitUntilDone:NO block:^{ \
-            block(result, error); \
-        }]; \
-    };
-
 @implementation ISAlbum
 +(void) getAllUsingAssetsLibrary:(ALAssetsLibrary*)library block:(ISAlbumAllBlock)block {
-    DISPATCH_ON_CURRENT_THREAD(ISAlbumAllBlock, (NSArray* result, NSError *error), block);
-    
     NSMutableArray *groups = [NSMutableArray array];
     
     ALAssetsLibraryGroupsEnumerationResultsBlock resultBlock = ^(ALAssetsGroup *group, BOOL *stop) {
         if(!group) {
-            _block(groups, nil);
+            block(groups, nil);
             return;
         }
         
@@ -41,28 +31,26 @@ const ALAssetsGroupType GROUP_TYPES = ALAssetsGroupAlbum | ALAssetsGroupSavedPho
         [groups addObject:[album autorelease]];
     };
     ALAssetsLibraryAccessFailureBlock failureBlock = ^(NSError *error) {
-        _block(nil, error);
+        block(nil, error);
     };
     
     [library enumerateGroupsWithTypes:GROUP_TYPES usingBlock:resultBlock failureBlock:failureBlock];
 }
 
 +(void) getUsingAssetsLibrary:(ALAssetsLibrary*)library byUrl:(NSString*)url block:(ISAlbumGetBlock)block {
-    DISPATCH_ON_CURRENT_THREAD(ISAlbumGetBlock, (ISAlbum *result, NSError *error), block);
-    
     ALAssetsLibraryGroupResultBlock resultBlock = ^(ALAssetsGroup *group) {
         if(!group) {
-            _block(nil, nil);
+            block(nil, nil);
             return;
         }
         
         [group setAssetsFilter:[ALAssetsFilter allPhotos]];
         
         ISAlbum *album = [[ISAlbum alloc] initWithAssetsLibrary:library assetsGroup:group];
-        _block([album autorelease], nil);
+        block([album autorelease], nil);
     };
     ALAssetsLibraryAccessFailureBlock failureBlock = ^(NSError *error) {
-        _block(nil, error);
+        block(nil, error);
     };
     
     NSURL *groupUrl = [NSURL URLWithString:url];

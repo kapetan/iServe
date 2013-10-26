@@ -10,13 +10,29 @@
 
 #import "HttpServer.h"
 
-typedef void (^ISResolveBlock)(HttpServerRequest *, HttpServerResponse *);
+typedef void(^ISResolveContinueBlock)(void);
+typedef void(^ISResolveContinuableBlock)(HttpServerRequest*, HttpServerResponse*, ISResolveContinueBlock next);
+
+typedef void(^ISResolveBlock)(HttpServerRequest*, HttpServerResponse*);
+
+@interface ISRoute : NSObject
+@property (nonatomic, readonly) NSString *method;
+@property (nonatomic, readonly) NSString *path;
+@property (nonatomic, readonly) ISResolveContinuableBlock block;
+
+-(id) initWithMethod:(NSString*)method path:(NSString*)path continueableBlock:(ISResolveContinuableBlock)block;
+-(id) initWithMethod:(NSString*)method path:(NSString*)path block:(ISResolveBlock)block;
+
+-(BOOL) doesMatchMethod:(NSString*)method andPath:(NSString*)path;
+@end
 
 @interface ISRouterDelegate : NSObject <HttpServerDelegate>
 @property (nonatomic, copy) void (^error)(ISRouterDelegate*, NSError*);
 @property (nonatomic, copy) void (^close)(ISRouterDelegate*);
 
 -(void) matchMethod:(id)method path:(id)path request:(ISResolveBlock)request;
+-(void) matchMethod:(id)method path:(id)path continuableRequest:(ISResolveContinuableBlock)request;
+-(void) matchRoute:(ISRoute*)route;
 
 -(void) routeRequest:(HttpServerRequest*)request response:(HttpServerResponse*)response;
 -(void) routeRequest:(HttpServerRequest*)request response:(HttpServerResponse*)response

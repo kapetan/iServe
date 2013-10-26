@@ -162,6 +162,13 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
             if(self.delegate) [self.delegate serverDidClose:self];
         };
         
+        [_router matchMethod:@"GET" path:@"/*"
+                continuableRequest:^(HttpServerRequest *request, HttpServerResponse *response, ISResolveContinueBlock next) {
+            
+            response.caller = [NSThread currentThread];
+            next();
+        }];
+        
         [_router matchMethod:@"GET" path:@"/api/albums" request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getAlbums:request response:response];
         }];
@@ -464,13 +471,13 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
     return self;
 }
 
--(id) delegate {
+-(id <ISServerDelegate>) delegate {
     @synchronized(_delegate) {
         return _delegate.delegate;
     }
 }
 
--(void) setDelegate:(id)delegate {
+-(void) setDelegate:(id <ISServerDelegate>)delegate {
     @synchronized(_delegate) {
         _delegate.delegate = delegate;
     }

@@ -7,16 +7,31 @@
 //
 
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <objc/runtime.h>
 
 #import "HttpServerResponse+ISResponse.h"
 
+#import "ISAction.h"
+
+static char ISResponseCallerKey;
+
 @implementation HttpServerResponse (ISResponse)
+-(NSThread*) caller {
+    return objc_getAssociatedObject(self, &ISResponseCallerKey);
+}
+
+-(void) setCaller:(NSThread *)caller {
+    objc_setAssociatedObject(self, &ISResponseCallerKey, caller, OBJC_ASSOCIATION_ASSIGN);
+}
+
 -(void) sendData:(NSData *)body statusCode:(HttpStatusCode)status {
-    NSString *length = [NSString stringWithFormat:@"%lu", (unsigned long)[body length]];
-    
-    [self writeHeaderStatus:status headers:@{ @"Content-Length": length }];
-    [self write:body];
-    [self end];
+    [ISAction executeBlockOnThread:self.caller waitUntilDone:NO block:^{
+        NSString *length = [NSString stringWithFormat:@"%lu", (unsigned long)[body length]];
+        
+        [self writeHeaderStatus:status headers:@{ @"Content-Length": length }];
+        [self write:body];
+        [self end];
+    }];
 }
 
 -(void) sendString:(NSString *)body statusCode:(HttpStatusCode)status {

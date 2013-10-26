@@ -8,50 +8,105 @@
 
 #import "ISRouterDelegate.h"
 
-@interface Route : NSObject
+@interface ISRequestResolver : NSObject
 @end
 
-@implementation Route {
-    NSString *_method;
-    NSPredicate *_path;
-    ISResolveBlock _block;
+@implementation ISRequestResolver {
+    NSArray *_routes;
+    HttpServerRequest *_request;
+    HttpServerResponse *_response;
+    
+    ISResolveContinueBlock _next;
+    NSInteger _current;
 }
 
--(id) init {
+-(id) initWithRoutes:(NSArray*)routes request:(HttpServerRequest*)request response:(HttpServerResponse*)response {
     if(self = [super init]) {
-        self->_method = @"GET";
-        self->_path = [[NSPredicate predicateWithFormat:@"SELF LIKE \"*\""] retain];
-        self->_block = Block_copy(^(HttpServerRequest *request, HttpServerResponse *response) {
-            [response writeHeaderStatus:HttpStatusCodeNotFound];
-            [response end];
-        });
+        __block ISRequestResolver *this = self;
+        
+        self->_routes = [routes retain];
+        self->_request = [request retain];
+        self->_response = [response retain];
+        
+        self->_current = 0;
+        self->_next = [^{
+            [this next];
+        } copy];
+    }
+    
+    return self;
+}
+
+-(void) next {
+    if(_current == [_routes count]) {
+        [_response writeHeaderStatus:HttpStatusCodeNotFound];
+        [_response end];
+        
+        return;
+    }
+    
+    ISRoute *route = [_routes objectAtIndex:_current++];
+    
+    if([route doesMatchMethod:_request.header.method andPath:_request.header.url.pathname]) {
+        route.block(_request, _response, _next);
+    } else {
+        [self next];
+    }
+}
+
+-(void) dealloc {
+    [_routes release];
+    [_request release];
+    [_response release];
+    
+    [_next release];
+    
+    [super dealloc];
+}
+@end
+
+@implementation ISRoute {
+    NSPredicate *_match;
+}
+
+@synthesize method = _method;
+@synthesize path = _path;
+@synthesize block = _block;
+
+-(id) init {
+    return [self initWithMethod:@"GET" path:@"/" block:^(HttpServerRequest *request, HttpServerResponse *response) {
+        [response end];
+    }];
+}
+
+-(id) initWithMethod:(NSString*)method path:(NSString*)path continueableBlock:(ISResolveContinuableBlock)block {
+    if(self = [super init]) {
+        self->_method = [method retain];
+        self->_path = [path retain];
+        self->_block = [block copy];
+        
+        self->_match = [[NSPredicate predicateWithFormat:@"(SELF LIKE[c] %@) OR (SELF LIKE[c] %@)",
+                         path, [path stringByAppendingString:@"/"]] retain];
     }
     
     return self;
 }
 
 -(id) initWithMethod:(NSString*)method path:(NSString*)path block:(ISResolveBlock)block {
-    if(self = [super init]) {
-        self->_method = [method retain];
-        self->_path = [[NSPredicate predicateWithFormat:@"(SELF LIKE[c] %@) OR (SELF LIKE[c] %@)",
-                        path, [path stringByAppendingString:@"/"]] retain];
-        self->_block = [block copy];
-    }
-    
-    return self;
+    return [self initWithMethod:method path:path
+              continueableBlock:^(HttpServerRequest *request, HttpServerResponse *response, ISResolveContinueBlock next) {
+        block(request, response);
+    }];
 }
 
 -(BOOL) doesMatchMethod:(NSString*)method andPath:(NSString*)path {
-    return [_method isEqualToString:method] && [_path evaluateWithObject:path];
-}
-
--(ISResolveBlock) getBlock {
-    return _block;
+    return [_method isEqualToString:method] && [_match evaluateWithObject:path];
 }
 
 -(void) dealloc {
     [self->_method release];
     [self->_path release];
+    [self->_match release];
     [self->_block release];
     
     [super dealloc];
@@ -60,7 +115,6 @@
 
 @implementation ISRouterDelegate {
     NSMutableDictionary *_routes;
-    Route *_notFound;
 }
 
 @synthesize error = _error;
@@ -69,13 +123,19 @@
 -(id) init {
     if(self = [super init]) {
         self->_routes = [[NSMutableDictionary alloc] init];
-        self->_notFound = [[Route alloc] init];
     }
     
     return self;
 }
 
 -(void) matchMethod:(id)method path:(id)path request:(ISResolveBlock)request {
+    [self matchMethod:method path:path
+            continuableRequest:^(HttpServerRequest *req, HttpServerResponse *resp, ISResolveContinueBlock next) {
+        request(req, resp);
+    }];
+}
+
+-(void) matchMethod:(id)method path:(id)path continuableRequest:(ISResolveContinuableBlock)request {
     if(![method isKindOfClass:[NSArray class]]) {
         method = [NSArray arrayWithObject:method];
     }
@@ -85,24 +145,33 @@
     
     for (NSString *m in method) {
         for (NSString *p in path) {
-            [self matchSingleMethod:m path:p request:request];
+            ISRoute *route = [[ISRoute alloc] initWithMethod:m path:p continueableBlock:request];
+            [self matchRoute:[route autorelease]];
         }
     }
 }
 
--(void) routeRequest:(HttpServerRequest *)request response:(HttpServerResponse *)response {
-    NSArray *paths = [_routes objectForKey:request.header.method];
+-(void) matchRoute:(ISRoute*)route {
+    NSMutableArray *paths = [_routes objectForKey:route.method];
     
-    for (Route *route in paths) {
-        if([route doesMatchMethod:request.header.method andPath:request.header.url.pathname]) {
-            ISResolveBlock block = [route getBlock];
-            block(request, response);
-            
-            return;
-        }
+    if(!paths) {
+        paths = [NSMutableArray array];
+        [_routes setObject:paths forKey:route.method];
     }
     
-    [_notFound getBlock](request, response);
+    [paths addObject:route];
+}
+
+-(void) routeRequest:(HttpServerRequest *)request response:(HttpServerResponse *)response {
+    NSArray *routes = [_routes objectForKey:request.header.method];
+    __block ISRequestResolver *resolver = [[ISRequestResolver alloc] initWithRoutes:routes request:request response:response];
+    HttpServerResponseBlockDelegate *delegate = response.delegate;
+    
+    delegate.end = delegate.close = ^(HttpServerResponse *response) {
+        [resolver release];
+    };
+    
+    [resolver next];
 }
 
 -(void) routeRequest:(HttpServerRequest *)request response:(HttpServerResponse *)response
@@ -130,22 +199,8 @@
 -(void) serverDidClose:(HttpServer *)server {
     if(self.close) self.close(self);
 }
-
--(void) matchSingleMethod:(NSString *)method path:(NSString *)path request:(ISResolveBlock)request {
-    NSMutableArray *paths = [_routes objectForKey:method];
-    
-    if(!paths) {
-        paths = [NSMutableArray array];
-        [_routes setObject:paths forKey:method];
-    }
-    
-    Route *route = [[Route alloc] initWithMethod:method path:path block:request];
-    [paths addObject:[route autorelease]];
-}
-
 -(void) dealloc {
     [_routes release];
-    [_notFound release];
     
     [super dealloc];
 }

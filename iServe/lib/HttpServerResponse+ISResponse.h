@@ -9,6 +9,8 @@
 #import "HttpServerResponse.h"
 
 @interface HttpServerResponse (ISResponse)
+@property (nonatomic, weak) NSThread *caller;
+
 -(void) sendData:(NSData*)body statusCode:(HttpStatusCode)status;
 -(void) sendString:(NSString*)body statusCode:(HttpStatusCode)status;
 -(void) sendJson:(id)body statusCode:(HttpStatusCode)status;
