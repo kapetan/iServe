@@ -364,12 +364,14 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
                         forField:@"Content-Disposition"];
         }
         
-        [response writeHeaderStatus:HttpStatusCodeOk headers:@{
-            @"Content-Type": [_mimeTypes mimeTypeForExtension:file.extension],
-            @"Content-Length": [NSString stringWithFormat:@"%lu", (unsigned long)[file getDataLength]]
-         }];
-        
-        StreamFileData(response, file, 0);
+        [response executeOnCallerThread:^{
+            [response writeHeaderStatus:HttpStatusCodeOk headers:@{
+                @"Content-Type": [_mimeTypes mimeTypeForExtension:file.extension],
+                @"Content-Length": [NSString stringWithFormat:@"%lu", (unsigned long)[file getDataLength]]
+            }];
+            
+            StreamFileData(response, file, 0);
+        }];
     }];
 }
 

@@ -11,8 +11,6 @@
 
 #import "HttpServerResponse+ISResponse.h"
 
-#import "ISAction.h"
-
 static char ISResponseCallerKey;
 
 @implementation HttpServerResponse (ISResponse)
@@ -22,6 +20,10 @@ static char ISResponseCallerKey;
 
 -(void) setCaller:(NSThread *)caller {
     objc_setAssociatedObject(self, &ISResponseCallerKey, caller, OBJC_ASSOCIATION_ASSIGN);
+}
+
+-(void) executeOnCallerThread:(ISActionBlock)block {
+    [ISAction executeBlockOnThread:self.caller waitUntilDone:NO block:block];
 }
 
 -(void) sendData:(NSData *)body statusCode:(HttpStatusCode)status {

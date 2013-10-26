@@ -8,8 +8,12 @@
 
 #import "HttpServerResponse.h"
 
+#import "ISAction.h"
+
 @interface HttpServerResponse (ISResponse)
 @property (nonatomic, weak) NSThread *caller;
+
+-(void) executeOnCallerThread:(ISActionBlock)block;
 
 -(void) sendData:(NSData*)body statusCode:(HttpStatusCode)status;
 -(void) sendString:(NSString*)body statusCode:(HttpStatusCode)status;
