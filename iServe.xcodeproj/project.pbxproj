@@ -45,6 +45,7 @@
 		C5788CE0180C7A1200EC39A3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C5788CDB180C7A1200EC39A3 /* Localizable.strings */; };
 		C5788CE3180C9C8F00EC39A3 /* icon.html in Resources */ = {isa = PBXBuildFile; fileRef = C5788CE2180C9C8F00EC39A3 /* icon.html */; };
 		C5788CE5180CA13400EC39A3 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = C5788CE4180CA13400EC39A3 /* icon.png */; };
+		C5A2D7AC181C14F500A20D6E /* ISQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = C5A2D7AB181C14F500A20D6E /* ISQueue.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -111,6 +112,8 @@
 		C5788CDC180C7A1200EC39A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Localizable.strings; sourceTree = "<group>"; };
 		C5788CE2180C9C8F00EC39A3 /* icon.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = icon.html; path = assets/icon.html; sourceTree = "<group>"; };
 		C5788CE4180CA13400EC39A3 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		C5A2D7AA181C14F500A20D6E /* ISQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISQueue.h; sourceTree = "<group>"; };
+		C5A2D7AB181C14F500A20D6E /* ISQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISQueue.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -249,6 +252,8 @@
 				C5685CA11811A5FF00457A2E /* NSDictionary+ISCollection.m */,
 				C5685CAB1812F07500457A2E /* ISAction.h */,
 				C5685CAC1812F07500457A2E /* ISAction.m */,
+				C5A2D7AA181C14F500A20D6E /* ISQueue.h */,
+				C5A2D7AB181C14F500A20D6E /* ISQueue.m */,
 			);
 			path = lib;
 			sourceTree = "<group>";
@@ -352,6 +357,7 @@
 				C55B76CD179754FC0001ADE9 /* HttpServerResponse.m in Sources */,
 				C55B76CE179754FC0001ADE9 /* HttpStatusCodes.m in Sources */,
 				C55B76CF179754FC0001ADE9 /* HttpUrl.m in Sources */,
+				C5A2D7AC181C14F500A20D6E /* ISQueue.m in Sources */,
 				C5685CAA1811A5FF00457A2E /* NSDictionary+ISCollection.m in Sources */,
 				C5685CA41811A5FF00457A2E /* ISFile.m in Sources */,
 				C55B76D1179754FC0001ADE9 /* TcpConnection.m in Sources */,

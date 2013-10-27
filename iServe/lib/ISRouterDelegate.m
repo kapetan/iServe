@@ -8,6 +8,31 @@
 
 #import "ISRouterDelegate.h"
 
+#import "ISQueue.h"
+
+@interface ISRequestQueue : ISQueue
+@end
+
+@implementation ISRequestQueue {
+    ISRouterDelegate *_router;
+}
+
+-(id) initWithConcurrency:(NSInteger)concurrency router:(ISRouterDelegate*)router {
+    if(self = [super initWithConcurrency:concurrency]) {
+        self->_router = router;
+    }
+    
+    return self;
+}
+
+-(void) runWithObject:(NSDictionary*)context {
+    HttpServerRequest *request = [context objectForKey:@"request"];
+    HttpServerResponse *response = [context objectForKey:@"response"];
+    
+    [_router routeRequest:request response:response];
+}
+@end
+
 @interface ISRequestResolver : NSObject
 @end
 
@@ -115,6 +140,7 @@
 
 @implementation ISRouterDelegate {
     NSMutableDictionary *_routes;
+    ISRequestQueue *_queue;
 }
 
 @synthesize error = _error;
@@ -123,6 +149,7 @@
 -(id) init {
     if(self = [super init]) {
         self->_routes = [[NSMutableDictionary alloc] init];
+        self->_queue = [[ISRequestQueue alloc] initWithConcurrency:1 router:self];
     }
     
     return self;
@@ -164,11 +191,15 @@
 
 -(void) routeRequest:(HttpServerRequest *)request response:(HttpServerResponse *)response {
     NSArray *routes = [_routes objectForKey:request.header.method];
+    
     __block ISRequestResolver *resolver = [[ISRequestResolver alloc] initWithRoutes:routes request:request response:response];
+    __block ISRouterDelegate *this = self;
+    
     HttpServerResponseBlockDelegate *delegate = response.delegate;
     
     delegate.end = delegate.close = ^(HttpServerResponse *response) {
         [resolver release];
+        [this->_queue completed];
     };
     
     [resolver next];
@@ -185,7 +216,10 @@
 }
 
 -(void) server:(HttpServer *)server request:(HttpServerRequest *)request response:(HttpServerResponse *)response {
-    [self routeRequest:request response:response];
+    NSDictionary *context = [[NSDictionary alloc] initWithObjectsAndKeys:request, @"request", response, @"response", nil];
+    
+    [_queue pushObject:context];
+    [context release];
 }
 
 -(void) server:(HttpServer *)server acceptedConnection:(TcpConnection *)connection {}
@@ -201,6 +235,7 @@
 }
 -(void) dealloc {
     [_routes release];
+    [_queue release];
     
     [super dealloc];
 }

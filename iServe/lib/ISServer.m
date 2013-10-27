@@ -486,12 +486,14 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
 }
 
 -(void) main {
-    _server = [[ISServer alloc] init];
-    _server.delegate = _delegate;
-    
-    [_server listenOnPort:_port];
-    
-    CFRunLoopRun();
+    @autoreleasepool {
+        _server = [[ISServer alloc] init];
+        _server.delegate = _delegate;
+        
+        [_server listenOnPort:_port];
+        
+        CFRunLoopRun();
+    }
 }
 
 -(void) close {
