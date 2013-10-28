@@ -195,6 +195,8 @@
     HttpServerResponseBlockDelegate *delegate = response.delegate;
     
     delegate.end = delegate.close = ^(HttpServerResponse *response) {
+        response.caller = nil;
+        
         [resolver release];
         [this->_queue completed];
     };
