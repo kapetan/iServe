@@ -33,9 +33,6 @@
 }
 @end
 
-@interface ISRequestResolver : NSObject
-@end
-
 @implementation ISRequestResolver {
     NSArray *_routes;
     HttpServerRequest *_request;
@@ -202,6 +199,12 @@
         [this->_queue completed];
     };
     
+    if(request.resolver) {
+        [request.resolver release];
+    }
+    
+    request.resolver = resolver;
+    
     [resolver next];
 }
 
@@ -217,6 +220,8 @@
 
 -(void) server:(HttpServer *)server request:(HttpServerRequest *)request response:(HttpServerResponse *)response {
     NSDictionary *context = [[NSDictionary alloc] initWithObjectsAndKeys:request, @"request", response, @"response", nil];
+    
+    response.caller = [NSThread currentThread];
     
     [_queue pushObject:context];
     [context release];

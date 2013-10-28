@@ -10,10 +10,18 @@
 
 #import "HttpServer.h"
 
+#import "HttpServerRequest+ISRequest.h"
+#import "HttpServerResponse+ISResponse.h"
+
 typedef void(^ISResolveContinueBlock)(void);
 typedef void(^ISResolveContinuableBlock)(HttpServerRequest*, HttpServerResponse*, ISResolveContinueBlock next);
 
 typedef void(^ISResolveBlock)(HttpServerRequest*, HttpServerResponse*);
+
+@interface ISRequestResolver : NSObject
+-(id) initWithRoutes:(NSArray*)routes request:(HttpServerRequest*)request response:(HttpServerResponse*)response;
+-(void) next;
+@end
 
 @interface ISRoute : NSObject
 @property (nonatomic, readonly) NSString *method;

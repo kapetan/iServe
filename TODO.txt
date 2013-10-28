@@ -2,9 +2,9 @@ TODO
 
 DONE - Create iOS UI
 
-- Better error handling in app (on server disconnect, no permission)
+DONE - Better error handling in app (on server disconnect, no permission)
 - Stress profile app
-- Do image scaling and heavy work in separate thread
+DONE - Do image scaling and heavy work in separate thread
 - Memory error on too many thumbs
 	* Image caching
 	* Lazy load images

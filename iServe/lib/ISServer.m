@@ -18,7 +18,6 @@
 
 #import "NSDictionary+ISCollection.h"
 #import "NSArray+ISCollection.h"
-#import "HttpServerResponse+ISResponse.h"
 
 #import "ISAction.h"
 #import "ISMimeTypes.h"
@@ -161,13 +160,6 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
         _router.close = ^(ISRouterDelegate *router) {
             if(self.delegate) [self.delegate serverDidClose:self];
         };
-        
-        [_router matchMethod:@"GET" path:@"/*"
-                continuableRequest:^(HttpServerRequest *request, HttpServerResponse *response, ISResolveContinueBlock next) {
-            
-            response.caller = [NSThread currentThread];
-            next();
-        }];
         
         [_router matchMethod:@"GET" path:@"/api/albums" request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getAlbums:request response:response];
