@@ -12,6 +12,7 @@
 #import "ISAction.h"
 
 #import "NSDictionary+ISCollection.h"
+#import "NSData+ISData.h"
 
 const ALAssetsGroupType GROUP_TYPES = ALAssetsGroupAlbum | ALAssetsGroupSavedPhotos;
 
@@ -55,6 +56,13 @@ const ALAssetsGroupType GROUP_TYPES = ALAssetsGroupAlbum | ALAssetsGroupSavedPho
     
     NSURL *groupUrl = [NSURL URLWithString:url];
     [library groupForURL:groupUrl resultBlock:resultBlock failureBlock:failureBlock];
+}
+
++(NSString*) urlFromHashCode:(NSString *)hashCode {
+    NSData *data = [[NSData dataWithHexString:hashCode] decompressAscii];
+    NSString *url = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+    
+    return [url autorelease];
 }
 
 @synthesize name = _name;
@@ -105,6 +113,10 @@ const ALAssetsGroupType GROUP_TYPES = ALAssetsGroupAlbum | ALAssetsGroupSavedPho
     [ISFile getUsingAlbum:self byIndex:index block:block];
 }
 
+-(NSString*) hashCode {
+    return [[[self.url dataUsingEncoding:NSASCIIStringEncoding] compressAscii] hexEncode];
+}
+
 -(NSInteger) numberOfFiles {
     return [_assetsGroup numberOfAssets];
 }
@@ -113,7 +125,8 @@ const ALAssetsGroupType GROUP_TYPES = ALAssetsGroupAlbum | ALAssetsGroupSavedPho
     return @{
         @"name": self.name,
         @"url": self.url,
-        @"numberOfFiles": [NSNumber numberWithInt:[self numberOfFiles]]
+        @"numberOfFiles": [NSNumber numberWithInt:[self numberOfFiles]],
+        @"hashCode": [self hashCode]
     };
 }
 

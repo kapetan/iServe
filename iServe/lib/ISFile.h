@@ -26,6 +26,8 @@ typedef void (^ISFileGetBlock) (ISFile*, NSError*);
 +(void) getUsingAssetsGroup:(ALAssetsGroup *)group byIndex:(NSUInteger)index block:(ISFileGetBlock)block;
 +(void) getUsingAlbum:(ISAlbum*)album byIndex:(NSUInteger)index block:(ISFileGetBlock)block;
 
++(NSString*) urlFromHashCode:(NSString*)hashCode;
+
 @property (nonatomic, readonly) NSString *name;
 @property (nonatomic, readonly) NSString *extension;
 @property (nonatomic, readonly) NSString *url;
@@ -44,6 +46,8 @@ typedef void (^ISFileGetBlock) (ISFile*, NSError*);
 -(NSUInteger) getDataLength;
 -(NSData*) getData;
 -(NSData*) getDataFromOffset:(NSUInteger)offset length:(NSUInteger)length;
+
+-(NSString*) hashCode;
 
 -(NSDictionary*) toDictionary;
 -(NSDictionary*) toDictionary:(NSDictionary*)dictionary;

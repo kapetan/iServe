@@ -23,6 +23,8 @@ typedef void (^ISAlbumFileBlock) (ISFile*, NSError*);
 +(void) getAllUsingAssetsLibrary:(ALAssetsLibrary*)library block:(ISAlbumAllBlock)block;
 +(void) getUsingAssetsLibrary:(ALAssetsLibrary*)library byUrl:(NSString*)url block:(ISAlbumGetBlock)block;
 
++(NSString*) urlFromHashCode:(NSString*)hashCode;
+
 @property (nonatomic, readonly) NSString *name;
 @property (nonatomic, readonly) NSString *url;
 
@@ -34,6 +36,8 @@ typedef void (^ISAlbumFileBlock) (ISFile*, NSError*);
 -(void) getAllFiles:(ISAlbumAllFilesBlock)block;
 -(void) getFileByUrl:(NSString*)url block:(ISAlbumFileBlock)block;
 -(void) getFileByIndex:(NSUInteger)index block:(ISAlbumFileBlock)block;
+
+-(NSString*) hashCode;
 
 -(NSInteger) numberOfFiles;
 

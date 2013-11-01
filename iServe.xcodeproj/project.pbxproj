@@ -46,6 +46,7 @@
 		C5788CE3180C9C8F00EC39A3 /* icon.html in Resources */ = {isa = PBXBuildFile; fileRef = C5788CE2180C9C8F00EC39A3 /* icon.html */; };
 		C5788CE5180CA13400EC39A3 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = C5788CE4180CA13400EC39A3 /* icon.png */; };
 		C57CE4D1181EBE4E00B3D242 /* HttpServerRequest+ISRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = C57CE4D0181EBE4E00B3D242 /* HttpServerRequest+ISRequest.m */; };
+		C57CE4D4181F0C9200B3D242 /* NSData+ISData.m in Sources */ = {isa = PBXBuildFile; fileRef = C57CE4D3181F0C9200B3D242 /* NSData+ISData.m */; };
 		C5A2D7AC181C14F500A20D6E /* ISQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = C5A2D7AB181C14F500A20D6E /* ISQueue.m */; };
 /* End PBXBuildFile section */
 
@@ -115,6 +116,8 @@
 		C5788CE4180CA13400EC39A3 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		C57CE4CF181EBE4E00B3D242 /* HttpServerRequest+ISRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "HttpServerRequest+ISRequest.h"; sourceTree = "<group>"; };
 		C57CE4D0181EBE4E00B3D242 /* HttpServerRequest+ISRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "HttpServerRequest+ISRequest.m"; sourceTree = "<group>"; };
+		C57CE4D2181F0C9200B3D242 /* NSData+ISData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+ISData.h"; sourceTree = "<group>"; };
+		C57CE4D3181F0C9200B3D242 /* NSData+ISData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+ISData.m"; sourceTree = "<group>"; };
 		C5A2D7AA181C14F500A20D6E /* ISQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISQueue.h; sourceTree = "<group>"; };
 		C5A2D7AB181C14F500A20D6E /* ISQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISQueue.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -259,6 +262,8 @@
 				C5A2D7AB181C14F500A20D6E /* ISQueue.m */,
 				C57CE4CF181EBE4E00B3D242 /* HttpServerRequest+ISRequest.h */,
 				C57CE4D0181EBE4E00B3D242 /* HttpServerRequest+ISRequest.m */,
+				C57CE4D2181F0C9200B3D242 /* NSData+ISData.h */,
+				C57CE4D3181F0C9200B3D242 /* NSData+ISData.m */,
 			);
 			path = lib;
 			sourceTree = "<group>";
@@ -362,6 +367,7 @@
 				C5685CA91811A5FF00457A2E /* NSArray+ISCollection.m in Sources */,
 				C55B76CD179754FC0001ADE9 /* HttpServerResponse.m in Sources */,
 				C55B76CE179754FC0001ADE9 /* HttpStatusCodes.m in Sources */,
+				C57CE4D4181F0C9200B3D242 /* NSData+ISData.m in Sources */,
 				C55B76CF179754FC0001ADE9 /* HttpUrl.m in Sources */,
 				C5A2D7AC181C14F500A20D6E /* ISQueue.m in Sources */,
 				C5685CAA1811A5FF00457A2E /* NSDictionary+ISCollection.m in Sources */,

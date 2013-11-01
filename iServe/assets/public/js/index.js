@@ -5,6 +5,8 @@ $(function() {
 	Backbone.history.start({ pushState: true });
 
 	$(document).on('click', 'a:not([data-bypass])', function (e) {
+		window.stop();
+
 		var href = $(this).attr('href');
 		var protocol = this.protocol + '//';
 

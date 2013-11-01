@@ -12,6 +12,7 @@
 #import "ISAction.h"
 
 #import "NSDictionary+ISCollection.h"
+#import "NSData+ISData.h"
 
 ISImageSize DEFAULT_THUMBNAIL_SIZE = { 300, 200 };
 ISImageScaleMode DEFAULT_THUMBNAIL_MODE = ISImageScaleModeCover;
@@ -105,6 +106,13 @@ ISImageScaleMode DEFAULT_THUMBNAIL_MODE = ISImageScaleModeCover;
     [ISFile getUsingAssetsGroup:album.assetsGroup byIndex:index block:block];
 }
 
++(NSString*) urlFromHashCode:(NSString *)hashCode {
+    NSData *data = [[NSData dataWithHexString:hashCode] decompressAscii];
+    NSString *url = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+    
+    return [url autorelease];
+}
+
 @synthesize name = _name;
 @synthesize extension = _extension;
 @synthesize url = _url;
@@ -171,12 +179,17 @@ ISImageScaleMode DEFAULT_THUMBNAIL_MODE = ISImageScaleModeCover;
     return data;
 }
 
+-(NSString*) hashCode {
+    return [[[self.url dataUsingEncoding:NSASCIIStringEncoding] compressAscii] hexEncode];
+}
+
 -(NSDictionary*) toDictionary {
     return @{
         @"name" : self.name,
         @"url": self.url,
         @"created": [self.created description],
-        @"type": self.type
+        @"type": self.type,
+        @"hashCode": [self hashCode]
     };
 }
 
