@@ -11,6 +11,8 @@
 
 #import "HttpServerResponse+ISResponse.h"
 
+//#import "HttpHeader.h"
+
 static char ISResponseCallerKey;
 
 @implementation HttpServerResponse (ISResponse)
@@ -100,5 +102,23 @@ static char ISResponseCallerKey;
     }
     
     [self sendServerError:message];
+}
+
+-(void) setExpires:(NSDate*)date {
+    NSDateFormatter *formatter = NSDateFormatterCreateRFC1123();
+    
+    [self.header setValue:[formatter stringFromDate:date] forField:@"Expires"];
+    [formatter release];
+}
+
+-(void) setCacheControl:(NSString*)control maxAge:(NSUInteger)age {
+    NSString *value = [NSString stringWithFormat:@"%@; max-age=%lu", control, (unsigned long)age];
+    
+    [self.header setValue:value forField:@"Cache-Control"];
+}
+
+-(void) cache:(NSUInteger)seconds {
+    [self setExpires:[NSDate dateWithTimeIntervalSinceNow:seconds]];
+    [self setCacheControl:@"public" maxAge:seconds];
 }
 @end

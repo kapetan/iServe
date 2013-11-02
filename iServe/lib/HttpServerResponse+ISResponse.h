@@ -29,4 +29,8 @@
 -(void) sendNotFound:(NSString*)message;
 
 -(void) sendError:(NSError*)error;
+
+-(void) setExpires:(NSDate*)date;
+-(void) setCacheControl:(NSString*)control maxAge:(NSUInteger)age;
+-(void) cache:(NSUInteger)seconds;
 @end

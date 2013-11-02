@@ -27,6 +27,7 @@
     if(!resource) { [response sendNotFound:@"Resource not found"]; return; } \
 
 const NSUInteger DATA_BUFFER_LENGTH = 1024 * 1024;
+const NSUInteger CACHE_TIME = 60 * 60 * 24;
 
 BOOL IsNullOrEmpty(id obj) {
     if(!obj || obj == [NSNull null]) {
@@ -322,6 +323,7 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
         [album getFileByIndex:(count - 1) block:^(ISFile *file, NSError *error) {
             HTTP_ERROR(response, error, file);
             
+            [response cache:CACHE_TIME];
             [response.header setValue:ISImageGetRepresentationMimeType(ISImageRepresentationPNG) forField:@"Content-Type"];
             [response sendData:[file getThumbnail:ISImageRepresentationPNG]];
         }];
@@ -355,6 +357,8 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
             [response.header setValue:[NSString stringWithFormat:@"attachment; filename=\"%@\"", file.name]
                         forField:@"Content-Disposition"];
         }
+        
+        [response cache:CACHE_TIME];
         
         [response executeOnCallerThread:^{
             [response writeHeaderStatus:HttpStatusCodeOk headers:@{
@@ -400,6 +404,8 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
         HTTP_ERROR(response, error, file);
         
         [response.header setValue:ISImageGetRepresentationMimeType(ISImageRepresentationPNG) forField:@"Content-Type"];
+        [response cache:CACHE_TIME];
+        
         [response sendData:block(file, ISImageRepresentationPNG)];
     }];
 }
