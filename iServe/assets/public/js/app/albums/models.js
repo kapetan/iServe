@@ -2,13 +2,7 @@
 	var Album = Backbone.Model.extend({
 		idAttribute: 'url',
 		getFiles: function(options) {
-			options = options || {};
-			var data = options.data || {};
-
-			data.album = this.get('url');
-			options.data = data;
-
-			var files = new app.models.FileCollection();
+			var files = new app.models.FileCollection(null, { album: this });
 			files.fetch(options);
 		}
 	});
