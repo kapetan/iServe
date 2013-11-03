@@ -22,7 +22,7 @@ DONE - Add gear dropdown to files (direct download and other actions)
 - Add cross origin support to server
 - Make thumburl accept dimensions
 - Create error page for web page (no assets permission)
-- Add client-side caching of albums and files
+DONE - Add client-side caching of albums and files
 
 DONE - Refactor response functions (e.g. RenderData) to categories extending HttpServerResponse
 - Update server routes to be more REST (similar to client routes)
@@ -38,4 +38,4 @@ DONE - Refactor response functions (e.g. RenderData) to categories extending Htt
 
 HTTP
 
-- Set close flag in TcpConnection
+DONE - Set close flag in TcpConnection

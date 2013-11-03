@@ -323,7 +323,6 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
         [album getFileByIndex:(count - 1) block:^(ISFile *file, NSError *error) {
             HTTP_ERROR(response, error, file);
             
-            [response cache:CACHE_TIME];
             [response.header setValue:ISImageGetRepresentationMimeType(ISImageRepresentationPNG) forField:@"Content-Type"];
             [response sendData:[file getThumbnail:ISImageRepresentationPNG]];
         }];
