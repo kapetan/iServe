@@ -51,11 +51,9 @@
 			};
 
 			img.src = url;
+			this.state = 'loading';
 
 			$image.removeAttr('data-thumbnail');
-
-			this.state = 'loading';
-			//this._loaded = true;
 		},
 		isThumable: function() {
 			return this.state === 'ready' && $.inviewport(this.$el, { threshold: 0 });
@@ -90,7 +88,6 @@
 			$window.on('scroll resize', this._onViewportChange = function() {
 				_(self.subviews).each(function(file) {
 					if(file.isThumable() && queue.indexOf(file) < 0) {
-						//file.loadThumbnail();
 						queue.push(file);
 					}
 				});
@@ -100,6 +97,7 @@
 
 			this.on('remove', function() {
 				$window.off('scroll resize', this._onViewportChange);
+				queue = [];
 			});
 		},
 		render: function() {

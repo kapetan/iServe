@@ -50,6 +50,9 @@
 .resource-container .resource-thumbnail {
 	box-sizing: border-box;
 	width: 100%;
+	background-color: #e7e7e7;
+	background-repeat: no-repeat;
+	background-position: 50% 25%;
 	overflow: hidden;
 }
 .resource-container .resource-thumbnail img {
