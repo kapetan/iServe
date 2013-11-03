@@ -24,7 +24,7 @@
 		renderAlbum: function(album) {
 			var view = new AlbumView({ model: album });
 
-			this.views.push(view);
+			this.subviews.push(view);
 			this.$el.append(view.render().el);
 		}
 	});

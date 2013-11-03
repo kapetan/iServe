@@ -1,7 +1,64 @@
 (function() {
+	var noop = function() {};
+
 	var FileView = app.views.TemplateView.extend({
 		template: function() {
 			return app.templates['file.html']({ file: this.model.attributes, album: this.options.album.attributes });
+		},
+		initialize: function() {
+			this.state = 'ready';
+		},
+		loadThumbnail: function(callback) {
+			callback = callback || noop;
+
+			var $thumb = this.$('.thumbnail');
+			var $image = this.$('.resource-thumbnail');
+
+			var url = $image.attr('data-thumbnail');
+
+			if(!url) {
+				return callback();
+			}
+
+			var self = this;
+			var img = new Image();
+			var ondone = function(err) {
+				$thumb
+					.removeClass('loading')
+					.addClass('loaded');
+
+				self.state = err ? 'errored' : 'loaded';
+
+				callback(err);
+			};
+
+			img.onload = function() {
+				var container = { width: $image.innerWidth(), height: $image.innerHeight() };
+
+				$(img)
+					.css({ 
+						width: img.width, 
+						height: img.height,
+						marginLeft: (container.width - img.width) * 0.5,
+						marginTop: (container.height - img.height) * 0.25
+					})
+					.appendTo($image);
+
+				ondone();
+			};
+			img.onerror = function() {
+				ondone(new Error('Failed loading image'));
+			};
+
+			img.src = url;
+
+			$image.removeAttr('data-thumbnail');
+
+			this.state = 'loading';
+			//this._loaded = true;
+		},
+		isThumable: function() {
+			return this.state === 'ready' && $.inviewport(this.$el, { threshold: 0 });
 		}
 	});
 
@@ -12,6 +69,38 @@
 		initialize: function() {
 			this.listenTo(this.collection, 'add', this.renderFile);
 			this.listenTo(this.collection, 'reset', this.renderAllFiles);
+
+			var queue = [];
+			var available = 1;
+			var dispatch = function() {
+				if(available && queue.length) {
+					available--;
+					var file = queue.splice(0, 1)[0];
+
+					file.loadThumbnail(function() {
+						available++;
+						dispatch();
+					});
+				}
+			};
+
+			var $window = $(window);
+			var self = this;
+
+			$window.on('scroll resize', this._onViewportChange = function() {
+				_(self.subviews).each(function(file) {
+					if(file.isThumable() && queue.indexOf(file) < 0) {
+						//file.loadThumbnail();
+						queue.push(file);
+					}
+				});
+
+				dispatch();
+			});
+
+			this.on('remove', function() {
+				$window.off('scroll resize', this._onViewportChange);
+			});
 		},
 		render: function() {
 			this.renderAllFiles();
@@ -24,8 +113,15 @@
 		renderFile: function(file) {
 			var view = new FileView({ model: file, album: this.options.album });
 
-			this.views.push(view);
+			this.subviews.push(view);
 			this.$el.append(view.render().el);
+
+			var self = this;
+
+			clearTimeout(this._onLoadThumbnail);
+			this._onLoadThumbnail = setTimeout(function() {
+				self._onViewportChange();
+			}, 10);
 		}
 	});
 

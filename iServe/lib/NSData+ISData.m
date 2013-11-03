@@ -79,24 +79,24 @@
     NSUInteger byteIndex = offset / 8;
     NSUInteger byteOffset = offset % 8;
     
-    uint8_t heighBits = _bytes[byteIndex] << byteOffset;
+    uint8_t highBits = _bytes[byteIndex] << byteOffset;
     uint8_t lowBits = 0;
     
     if(++byteIndex < _length) {
         lowBits = _bytes[byteIndex] >> (8 - byteOffset);
     }
     
-    return heighBits | lowBits;
+    return highBits | lowBits;
 }
 
 -(void) setByte:(uint8_t)byte atOffset:(NSUInteger)offset {
     NSUInteger byteIndex = offset / 8;
     NSUInteger byteOffset = offset % 8;
     
-    uint8_t heighBits = byte >> byteOffset;
+    uint8_t highBits = byte >> byteOffset;
     uint8_t lowBits = byte << (8 - byteOffset);
     
-    _bytes[byteIndex] = (_bytes[byteIndex] & ~(0xFF >> byteOffset)) | heighBits;
+    _bytes[byteIndex] = (_bytes[byteIndex] & ~(0xFF >> byteOffset)) | highBits;
     
     if(++byteIndex < _length) {
         _bytes[byteIndex] = (_bytes[byteIndex] & ~(0xFF << (8 - byteOffset))) | lowBits;
