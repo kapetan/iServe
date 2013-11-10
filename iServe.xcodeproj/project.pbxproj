@@ -48,6 +48,7 @@
 		C57CE4D1181EBE4E00B3D242 /* HttpServerRequest+ISRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = C57CE4D0181EBE4E00B3D242 /* HttpServerRequest+ISRequest.m */; };
 		C57CE4D4181F0C9200B3D242 /* NSData+ISData.m in Sources */ = {isa = PBXBuildFile; fileRef = C57CE4D3181F0C9200B3D242 /* NSData+ISData.m */; };
 		C5A2D7AC181C14F500A20D6E /* ISQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = C5A2D7AB181C14F500A20D6E /* ISQueue.m */; };
+		C5B9777D182DAB69008E1CEE /* ISCookie.m in Sources */ = {isa = PBXBuildFile; fileRef = C5B9777C182DAB69008E1CEE /* ISCookie.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -120,6 +121,8 @@
 		C57CE4D3181F0C9200B3D242 /* NSData+ISData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+ISData.m"; sourceTree = "<group>"; };
 		C5A2D7AA181C14F500A20D6E /* ISQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISQueue.h; sourceTree = "<group>"; };
 		C5A2D7AB181C14F500A20D6E /* ISQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISQueue.m; sourceTree = "<group>"; };
+		C5B9777B182DAB69008E1CEE /* ISCookie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISCookie.h; sourceTree = "<group>"; };
+		C5B9777C182DAB69008E1CEE /* ISCookie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISCookie.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -264,6 +267,8 @@
 				C57CE4D0181EBE4E00B3D242 /* HttpServerRequest+ISRequest.m */,
 				C57CE4D2181F0C9200B3D242 /* NSData+ISData.h */,
 				C57CE4D3181F0C9200B3D242 /* NSData+ISData.m */,
+				C5B9777B182DAB69008E1CEE /* ISCookie.h */,
+				C5B9777C182DAB69008E1CEE /* ISCookie.m */,
 			);
 			path = lib;
 			sourceTree = "<group>";
@@ -357,6 +362,7 @@
 				C5685CA51811A5FF00457A2E /* ISImage.m in Sources */,
 				C53BB2901795F6F7003F985B /* AppDelegate.m in Sources */,
 				C53BB2991795F6F7003F985B /* ViewController.m in Sources */,
+				C5B9777D182DAB69008E1CEE /* ISCookie.m in Sources */,
 				C55B76C8179754FC0001ADE9 /* HttpError.m in Sources */,
 				C5685CAD1812F07500457A2E /* ISAction.m in Sources */,
 				C55B76C9179754FC0001ADE9 /* HttpHeader.m in Sources */,

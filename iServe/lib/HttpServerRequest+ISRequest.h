@@ -12,4 +12,5 @@
 
 @interface HttpServerRequest (ISRequest)
 @property (nonatomic, assign) ISRequestResolver *resolver;
+@property (nonatomic, readonly) NSDictionary *cookie;
 @end

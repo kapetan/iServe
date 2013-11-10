@@ -37,6 +37,8 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
 
 -(void) getPublicFiles:(HttpServerRequest*)request response:(HttpServerResponse*)response;
 -(void) getTemplates:(HttpServerRequest*)request response:(HttpServerResponse*)response;
+-(void) getScripts:(HttpServerRequest*) request response:(HttpServerResponse*)response;
+-(void) getStyles:(HttpServerRequest*)request response:(HttpServerResponse*)response;
 
 -(void) getAlbums:(HttpServerRequest*)request response:(HttpServerResponse*)response;
 -(void) getFiles:(HttpServerRequest*)request response:(HttpServerResponse*)response;

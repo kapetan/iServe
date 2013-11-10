@@ -3,52 +3,61 @@
 	<head>
 		<title>iServe</title>
 
-		<link rel="stylesheet" type="text/css" href="/public/css/bootstrap.css">
+		<link rel="icon" type="image/png" href="/public/favicon.ico">
 
-		<link rel="stylesheet" type="text/css" href="/public/css/index.css">
-		
-		<script type="text/javascript" src="/public/js/lib/jquery.js"></script>
-		<script type="text/javascript" src="/public/js/lib/jquery.viewport.js"></script>
+		<script type="text/javascript" src="/public/styles"></script>
+		<script type="text/javascript" src="/public/scripts"></script>
 
-		<script type="text/javascript" src="/public/js/lib/json2.js"></script>
-		<script type="text/javascript" src="/public/js/lib/underscore.js"></script>
-		<script type="text/javascript" src="/public/js/lib/backbone.js"></script>
-		<script type="text/javascript" src="/public/js/lib/bootstrap.js"></script>
-
-		<script type="text/javascript" src="/public/templates"></script>
+		<script type="text/javascript">
+			window.app = {
+				controllers: {},
+				models: {},
+				views: {}
+			};
+		</script>
 
 		<script type="text/javascript">
 			(function() {
-				window.app = _.extend({
-					controllers: {},
-					models: {},
-					views: {}
-				}, Backbone.Events);
+				var cookie = function() {
+					var result = {};
+					var cookies = document.cookie.split(';');
+
+					var t = function(str) {
+						return str.replace(/(^\s+)|(\s+$)/g, '');
+					};
+
+					for(var i = 0; i < cookies.length; i++) {
+						var pair = cookies[i].split('=');
+						result[pair[0]] = pair[1] && decodeURIComponent(pair[1]);
+					}
+
+					return result;
+				};
+				var tag = function(name, close, attributes) {
+					var result = '<' + name;
+
+					for(var n in attributes) {
+						if(attributes.hasOwnProperty(n)) {
+							result += ' ' + n + '="' + attributes[n] + '"';
+						}
+					}
+
+					return result + '>' + (close ? '</' + name + '>' : '');
+				};
+
+				var cache = cookie()['cache'];
+
+				for(var i = 0; i < window._styles.length; i++) {
+					var s = tag('link', false, { rel: 'stylesheet', type: 'text/css', href: window._styles[i] + '?' + cache });
+					document.write(s);
+				}
+
+				for(var i = 0; i < window._scripts.length; i++) {
+					var s = tag('script', true, { type: 'text/javascript', src: window._scripts[i] + '?' + cache });
+					document.write(s);
+				}
 			}());
 		</script>
-
-		<script type="text/javascript" src="/public/js/app/shared/cache.js"></script>
-		<script type="text/javascript" src="/public/js/app/shared/helpers.js"></script>
-		<script type="text/javascript" src="/public/js/app/shared/templates.js"></script>
-
-		<script type="text/javascript" src="/public/js/app/shared/base-view.js"></script>
-		<script type="text/javascript" src="/public/js/app/shared/content-view.js"></script>
-		<script type="text/javascript" src="/public/js/app/shared/template-view.js"></script>
-		
-		<script type="text/javascript" src="/public/js/app/albums/controller.js"></script>
-		<script type="text/javascript" src="/public/js/app/albums/models.js"></script>
-		<script type="text/javascript" src="/public/js/app/albums/views.js"></script>
-
-		<script type="text/javascript" src="/public/js/app/files/controller.js"></script>
-		<script type="text/javascript" src="/public/js/app/files/models.js"></script>
-		<script type="text/javascript" src="/public/js/app/files/views.js"></script>
-
-		<script type="text/javascript" src="/public/js/app/errors/controller.js"></script>
-		<script type="text/javascript" src="/public/js/app/errors/views.js"></script>
-
-		<script type="text/javascript" src="/public/js/app/shared/router.js"></script>
-
-		<script type="text/javascript" src="/public/js/index.js"></script>
 	</head>
 	<body>
 		<nav class="navbar navbar-default navbar-static-top" role="navigation">

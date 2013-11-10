@@ -1,0 +1,2 @@
+/public/css/bootstrap.css
+/public/css/index.css

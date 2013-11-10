@@ -18,6 +18,7 @@
 
 #import "NSDictionary+ISCollection.h"
 #import "NSArray+ISCollection.h"
+#import "NSData+ISData.h"
 
 #import "ISAction.h"
 #import "ISMimeTypes.h"
@@ -27,7 +28,7 @@
     if(!resource) { [response sendNotFound:@"Resource not found"]; return; } \
 
 const NSUInteger DATA_BUFFER_LENGTH = 1024 * 1024;
-const NSUInteger CACHE_TIME = 60 * 60 * 24;
+const NSUInteger CACHING_TIME = 60 * 60 * 24 * 365;
 
 BOOL IsNullOrEmpty(id obj) {
     if(!obj || obj == [NSNull null]) {
@@ -102,6 +103,50 @@ NSDictionary *SerializeDirectory(NSString *path, BOOL hidden, NSError **error) {
     return directory;
 }
 
+NSArray *SerializeResources(NSString *path, NSError **error) {
+    NSError *err = nil;
+    NSString *resources = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&err];
+    
+    if(err) {
+        if(error != NULL) *error = err;
+        return nil;
+    }
+    
+    NSArray *list = [resources componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    NSMutableArray *result = [NSMutableArray array];
+    
+    for (NSString* resource in list) {
+        resource = [resource stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        
+        if(resource.length) {
+            [result addObject:resource];
+        }
+    }
+    
+    return result;
+}
+
+void StreamJavascript(HttpServerResponse *response, NSString *var, id object) {
+    NSError *error = nil;
+    NSData *json = [NSJSONSerialization dataWithJSONObject:object options:0 error:&error];
+    
+    if(error) {
+        [response sendError:error];
+        return;
+    }
+    
+    NSMutableData *body = [[var dataUsingEncoding:NSUTF8StringEncoding] mutableCopy];
+    uint8_t assign[3] = { 0x20, 0x3D, 0x20 };
+    
+    [body appendBytes:&assign length:3];
+    [body appendData:json];
+    
+    [response.header setValue:@"application/javascript" forField:@"Content-Type"];
+    [response sendData:body];
+    
+    [body release];
+}
+
 void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offset) {
     NSUInteger length = [file getDataLength];
     BOOL flushed = NO;
@@ -137,6 +182,7 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
     
     ISMimeTypes *_mimeTypes;
     NSPredicate *_charset;
+    NSString *_cache;
     
     ALAssetsLibrary *_assetsLibrary;
 }
@@ -150,6 +196,7 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
         
         _mimeTypes = [[ISMimeTypes alloc] initWithJsonFile:AssetsPath(@"mimetypes.json")];
         _charset = [[NSPredicate predicateWithFormat:@"(SELF BEGINSWITH \"text/\") AND NOT (SELF LIKE \"*charset=*\")"] retain];
+        _cache = [[[[[NSDate date] description] dataUsingEncoding:NSUTF8StringEncoding] sha1] hexEncode];
         
         _assetsLibrary = [[ALAssetsLibrary alloc] init];
         
@@ -190,20 +237,28 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
                      request:^(HttpServerRequest *request, HttpServerResponse *response) {
             [self getTemplates:request response:response];
         }];
+        [_router matchMethod:@"GET" path:@"/public/scripts"
+                     request:^(HttpServerRequest *request, HttpServerResponse *response) {
+            [self getScripts:request response:response];
+        }];
+        [_router matchMethod:@"GET" path:@"/public/styles"
+                     request:^(HttpServerRequest *request, HttpServerResponse *response) {
+            [self getStyles:request response:response];
+        }];
         
         [_router matchMethod:@"GET" path:@[@"/app/*", @"/app"]
                      request:^(HttpServerRequest *request, HttpServerResponse *response) {
-            [_router routeRequest:request response:response toMethod:@"GET" path:@"/public/index.html"];
+            HttpUrl *url = [[HttpUrl alloc] initWithPathname:@"/public/index.html" query:request.header.url.query];
+            request.header.url = url;
+            [url release];
+            
+            [response setCookieWithName:@"cache" value:_cache];
+            [self getPublicFiles:request response:response];
+            
         }];
         [_router matchMethod:@"GET" path:@"/" request:^(HttpServerRequest *request, HttpServerResponse *response) {
-            [response writeHeaderStatus:HttpStatusCodeFound
-                                headers:@{ @"Location": AbsoluteUrl(request, @"/app", nil) }];
+            [response redirectToLocation:AbsoluteUrl(request, @"/app", nil)];
             [response end];
-        }];
-        
-        [_router matchMethod:@"GET" path:@"/favicon.ico"
-                     request:^(HttpServerRequest *request, HttpServerResponse *response) {
-            [_router routeRequest:request response:response toMethod:@"GET" path:@"/public/favicon.ico"];
         }];
         
         [_router matchMethod:@"GET" path:@"/*" request:^(HttpServerRequest *request, HttpServerResponse *response) {
@@ -229,6 +284,7 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
         mimeType = [mimeType stringByAppendingString:@"; charset=utf-8"];
     }
     
+    [response cache:CACHING_TIME];
     [response.header setValue:mimeType forField:@"Content-Type"];
     [response sendData:file];
 }
@@ -242,20 +298,33 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
         return;
     }
     
-    NSData *json = [NSJSONSerialization dataWithJSONObject:directory options:0 error:&error];
+    [response cache:CACHING_TIME];
+    
+    StreamJavascript(response, @"window._templates", directory);
+}
+
+-(void) getScripts:(HttpServerRequest *)request response:(HttpServerResponse *)response {
+    NSError *error = nil;
+    NSArray *scripts = SerializeResources(AssetsPath(@"/public/scripts.txt"), &error);
     
     if(error) {
         [response sendError:error];
         return;
     }
     
-    NSMutableData *body = [[@"window._templates = " dataUsingEncoding:NSUTF8StringEncoding] mutableCopy];
-    [body appendData:json];
+    StreamJavascript(response, @"window._scripts", scripts);
+}
+
+-(void) getStyles:(HttpServerRequest*)request response:(HttpServerResponse*)response {
+    NSError *error = nil;
+    NSArray *styles = SerializeResources(AssetsPath(@"/public/styles.txt"), &error);
     
-    [response.header setValue:@"application/javascript" forField:@"Content-Type"];
-    [response sendData:body];
+    if(error) {
+        [response sendError:error];
+        return;
+    }
     
-    [body release];
+    StreamJavascript(response, @"window._styles", styles);
 }
 
 -(void) getAlbums:(HttpServerRequest*)request response:(HttpServerResponse*)response {
@@ -357,7 +426,7 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
                         forField:@"Content-Disposition"];
         }
         
-        [response cache:CACHE_TIME];
+        [response cache:CACHING_TIME];
         
         [response executeOnCallerThread:^{
             [response writeHeaderStatus:HttpStatusCodeOk headers:@{
@@ -385,6 +454,7 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
     [_server release];
     [_mimeTypes release];
     [_charset release];
+    [_cache release];
     [_assetsLibrary release];
     
     [super dealloc];
@@ -403,7 +473,7 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
         HTTP_ERROR(response, error, file);
         
         [response.header setValue:ISImageGetRepresentationMimeType(ISImageRepresentationPNG) forField:@"Content-Type"];
-        [response cache:CACHE_TIME];
+        [response cache:CACHING_TIME];
         
         [response sendData:block(file, ISImageRepresentationPNG)];
     }];

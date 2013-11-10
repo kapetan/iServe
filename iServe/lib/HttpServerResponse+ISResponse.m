@@ -104,6 +104,16 @@ static char ISResponseCallerKey;
     [self sendServerError:message];
 }
 
+-(void) redirectToLocation:(NSString*)location withStatusCode:(HttpStatusCode)status {
+    [self.header setValue:location forField:@"Location"];
+    [self writeHeaderStatus:status];
+    [self end];
+}
+
+-(void) redirectToLocation:(NSString *)location {
+    [self redirectToLocation:location withStatusCode:HttpStatusCodeFound];
+}
+
 -(void) setExpires:(NSDate*)date {
     NSDateFormatter *formatter = NSDateFormatterCreateRFC1123();
     
@@ -120,5 +130,38 @@ static char ISResponseCallerKey;
 -(void) cache:(NSUInteger)seconds {
     [self setExpires:[NSDate dateWithTimeIntervalSinceNow:seconds]];
     [self setCacheControl:@"public" maxAge:seconds];
+}
+
+-(void) setCookie:(ISCookie*)cookie {
+    NSString *setCookieHeader = [self.header fieldValue:@"Set-Cookie"];
+    
+    if(setCookieHeader) {
+        setCookieHeader = [NSString stringWithFormat:@"%@,%@", setCookieHeader, [cookie toString]];
+    } else {
+        setCookieHeader = [cookie toString];
+    }
+    
+    [self.header setValue:setCookieHeader forField:@"Set-Cookie"];
+}
+
+-(void) setCookieWithName:(NSString*)name value:(NSString*)value {
+    [self setCookieWithName:name value:value expires:nil];
+}
+
+-(void) setCookieWithName:(NSString*)name value:(NSString*)value expires:(NSDate*)date {
+    ISCookie *cookie = [[ISCookie alloc] init];
+    
+    cookie.name = name;
+    cookie.value = value;
+    cookie.expires = date;
+    cookie.path = @"/";
+    
+    [self setCookie:cookie];
+    [cookie release];
+}
+
+-(void) removeCookie:(NSString*)name {
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:0];
+    [self setCookieWithName:name value:@"0" expires:date];
 }
 @end
