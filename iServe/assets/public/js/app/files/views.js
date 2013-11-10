@@ -68,6 +68,7 @@
 			this.listenTo(this.collection, 'add', this.renderFile);
 			this.listenTo(this.collection, 'reset', this.renderAllFiles);
 
+			var onDispatch;
 			var queue = [];
 			var available = 1;
 			var dispatch = function() {
@@ -81,23 +82,31 @@
 					});
 				}
 			};
+			var clear = function() {
+				queue = [];
+			};
 
 			var $window = $(window);
 			var self = this;
 
 			$window.on('scroll resize', this._onViewportChange = function() {
-				_(self.subviews).each(function(file) {
-					if(file.isThumable() && queue.indexOf(file) < 0) {
-						queue.push(file);
-					}
-				});
+				clearTimeout(onDispatch);
+				onDispatch = setTimeout(function() {
+					clear();
 
-				dispatch();
+					_(self.subviews).each(function(file) {
+						if(file.isThumable() && queue.indexOf(file) < 0) {
+							queue.push(file);
+						}
+					});
+
+					dispatch();
+				}, 200);
 			});
 
 			this.on('remove', function() {
 				$window.off('scroll resize', this._onViewportChange);
-				queue = [];
+				clear();
 			});
 		},
 		render: function() {
