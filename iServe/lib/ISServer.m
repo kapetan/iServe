@@ -49,17 +49,14 @@ NSString *AssetsPath(NSString *path) {
 NSString *AbsoluteUrl(HttpServerRequest *request, NSString *path, NSDictionary *query) {
     NSString *host = [request.header fieldValue:@"Host"];
     
-    if(!host) {
-        return nil;
-    }
-    
-    NSString *url = [NSString stringWithFormat:@"http://%@%@", host, path];
-    
     if(query && [query count]) {
-        return [url stringByAppendingFormat:@"?%@", SerializeQuery(query)];
+        path = [NSString stringWithFormat:@"%@?%@", path, SerializeQuery(query)];
+    }
+    if(!host) {
+        return path;
     }
     
-    return url;
+    return [NSString stringWithFormat:@"http://%@%@", host, path];
 }
 
 NSDictionary *SerializeDirectory(NSString *path, BOOL hidden, NSError **error) {
@@ -156,7 +153,7 @@ void StreamFileData(HttpServerResponse *response, ISFile *file, NSUInteger offse
         NSData *buffer = [file getDataFromOffset:offset length:read];
         
         if(!buffer) {
-            [response.connection close];
+            [response.connection destroy];
             return;
         }
         

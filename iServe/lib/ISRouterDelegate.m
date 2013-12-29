@@ -10,6 +10,8 @@
 
 #import "ISQueue.h"
 
+NSInteger count = 0;
+
 @interface ISRequestQueue : ISQueue
 @end
 
@@ -194,7 +196,7 @@
     
     HttpServerResponseBlockDelegate *delegate = response.delegate;
     
-    delegate.end = delegate.close = ^(HttpServerResponse *response) {
+    delegate.finish = delegate.close = ^(HttpServerResponse *response) {
         response.caller = nil;
         
         [resolver release];
